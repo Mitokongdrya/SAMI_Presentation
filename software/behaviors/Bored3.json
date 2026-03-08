@@ -1,0 +1,142 @@
+{
+    "Name": "Bored3",
+    "Keyframes": [
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Down",
+        "WaitTime": 500,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightChest",
+            "Angle": 125
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 105
+          },
+          {
+            "Joint": "RightShoulder",
+            "Angle": 100
+          },
+          {
+            "Joint": "LeftShoulder",
+            "Angle": 160
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 125
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 95
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 175
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 35
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Down",
+        "WaitTime": 100,
+        "JointMoveTime": 9,
+        "JointAngles": [
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 65
+          },
+          {
+            "Joint": "RightChest",
+            "Angle": 145
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 130
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Down",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightAnkle",
+            "Angle": 100
+          },
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 90
+          },
+          {
+            "Joint": "RightChest",
+            "Angle": 125
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 105
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Down",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightAnkle",
+            "Angle": 80
+          },
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 65
+          },
+          {
+            "Joint": "RightChest",
+            "Angle": 145
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 130
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Down",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightAnkle",
+            "Angle": 100
+          },
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 90
+          },
+          {
+            "Joint": "RightChest",
+            "Angle": 125
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 105
+          }
+        ]
+      }
+    ]
+  }

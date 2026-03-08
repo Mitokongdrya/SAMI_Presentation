@@ -1,0 +1,32 @@
+favicon: false
+color-scheme: auto
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jemoji
+
+remote_theme: zendesk/jekyll-theme-zendesk-garden@main
+
+sidebar:
+  - getting-started
+  - label: Building and Testing the Robot
+    children:
+      - assembly-intro
+      - part-fabrication
+      - assembly-control
+      - assembly-motors
+      - assembly-lower-body
+      - assembly-torso
+      - assembly-arms
+      - assembly-final
+      - software-setup
+  - label: Software Documentation
+    children:
+      - software-architecture
+      - behavior-guide
+      - comm-protocol
+  - label: Hardware Documentation
+    children:
+      - angle-ranges

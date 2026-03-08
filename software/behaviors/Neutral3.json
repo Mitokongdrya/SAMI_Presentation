@@ -1,0 +1,93 @@
+{
+    "Name": "Neutral3",
+    "Keyframes": [
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 800,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftBicep",
+            "Angle": 145
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 65
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 90
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 130
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 200,
+        "JointMoveTime": 3,
+        "JointAngles": [
+          {
+            "Joint": "LeftBicep",
+            "Angle": 130
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 80
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 200,
+        "JointMoveTime": 3,
+        "JointAngles": [
+          {
+            "Joint": "LeftBicep",
+            "Angle": 145
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 65
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 200,
+        "JointMoveTime": 3,
+        "JointAngles": [
+          {
+            "Joint": "LeftBicep",
+            "Angle": 130
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 80
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 200,
+        "JointMoveTime": 3,
+        "JointAngles": [
+          {
+            "Joint": "LeftBicep",
+            "Angle": 145
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 65
+          }
+        ]
+      }
+    ]
+  }

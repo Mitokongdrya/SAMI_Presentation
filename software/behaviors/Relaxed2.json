@@ -1,0 +1,45 @@
+{
+    "Name": "Relaxed2",
+    "Keyframes": [
+      {
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 800,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftBicep",
+            "Angle": 140
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 70
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 95
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 120
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 200,
+        "JointMoveTime": 3,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 95
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 120
+          }
+        ]
+      }
+    ]
+  }

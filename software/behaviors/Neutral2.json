@@ -1,0 +1,74 @@
+{
+    "Name": "Neutral2",
+    "Keyframes": [
+            {
+            "HasEmote": "True",
+            "HasJoints": "True",
+            "Expression": "Neutral",
+            "WaitTime": 500,
+            "JointMoveTime": 10,
+            "JointAngles": [
+              {
+                "Joint": "RightChest",
+                "Angle": 200
+              },
+              {
+                "Joint": "RightElbow",
+                "Angle": 55
+              }
+            ]
+        },
+        {
+            "HasEmote": "True",
+            "HasJoints": "True",
+            "Expression": "Neutral",
+            "WaitTime": 100,
+            "JointMoveTime": 8,
+            "JointAngles": [
+              {
+                "Joint": "RightElbow",
+                "Angle": 40
+              }
+            ]
+        },
+        {
+            "HasEmote": "True",
+            "HasJoints": "True",
+            "Expression": "Neutral",
+            "WaitTime": 100,
+            "JointMoveTime": 8,
+            "JointAngles": [
+              {
+                "Joint": "RightElbow",
+                "Angle": 55
+              }
+            ]
+        },
+        {
+            "HasEmote": "True",
+            "HasJoints": "True",
+            "Expression": "Neutral",
+            "WaitTime": 100,
+            "JointMoveTime": 8,
+            "JointAngles": [
+              {
+                "Joint": "RightElbow",
+                "Angle": 40
+              }
+            ]
+        },
+        {
+            "HasEmote": "True",
+            "HasJoints": "True",
+            "Expression": "Neutral",
+            "WaitTime": 100,
+            "JointMoveTime": 8,
+            "JointAngles": [
+              {
+                "Joint": "RightElbow",
+                "Angle": 55
+              }
+            ]
+        }
+    ]
+}

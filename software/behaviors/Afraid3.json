@@ -1,0 +1,77 @@
+{
+    "Name" : "Afraid3",
+    "Keyframes": [
+            {
+            "HasEmote": "True",
+            "HasAudio": "False",
+            "HasJoints": "True",
+            "Expression": "Sad",
+            "WaitTime": 300,
+            "JointMoveTime": 10,
+            "JointAngles": [
+              {
+                "Joint": "RightChest",
+                "Angle": 200
+              },
+              {
+                "Joint": "LeftChest",
+                "Angle": 55
+              },
+              {
+                "Joint": "RightShoulder",
+                "Angle": 90
+              },
+              {
+                "Joint": "LeftShoulder",
+                "Angle": 170
+              },
+              {
+                "Joint": "RightBicep",
+                "Angle": 60
+              },
+              {
+                "Joint": "LeftBicep",
+                "Angle": 140
+              },
+              {
+                "Joint": "RightElbow",
+                "Angle": 130
+              },
+              {
+                "Joint": "LeftElbow",
+                "Angle": 95
+              },
+              {
+                "Joint": "TorsoBow",
+                "Angle": 115
+              },
+              {
+                "Joint": "HeadNod",
+                "Angle": 145
+              }   
+            ]
+          },
+          {
+            "HasEmote": "True",
+            "HasAudio": "False",
+            "HasJoints": "True",
+            "Expression": "Closed",
+            "WaitTime": 0,
+            "JointMoveTime": 10,
+            "JointAngles": [
+ 
+            ]
+          },
+          {
+            "HasEmote": "True",
+            "HasAudio": "False",
+            "HasJoints": "True",
+            "Expression": "Sad",
+            "WaitTime": 300,
+            "JointMoveTime": 10,
+            "JointAngles": [
+ 
+            ]
+          }
+    ]
+}

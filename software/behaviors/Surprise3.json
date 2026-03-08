@@ -1,0 +1,59 @@
+{
+    "Name": "Surprise3",
+    "Keyframes": [
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 600,
+        "JointMoveTime": 5,
+        "JointAngles": [
+          {
+            "Joint": "RightChest",
+            "Angle": 225
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 45
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 115
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 110
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 60
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 145
+          },
+          {
+            "Joint": "TorsoBow",
+            "Angle": 125
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 50,
+        "JointMoveTime": 1,
+        "JointAngles": [
+  
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 50,
+        "JointMoveTime": 1,
+        "JointAngles": [
+  
+        ]
+      }
+    ]
+  }

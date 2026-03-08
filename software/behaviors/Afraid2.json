@@ -1,0 +1,39 @@
+{
+    "Name" : "Afraid2",
+    "Keyframes": [
+            {
+            "HasEmote": "True",
+            "HasAudio": "False",
+            "HasJoints": "True",
+            "Expression": "Sad",
+            "WaitTime": 150,
+            "JointMoveTime": 9,
+            "JointAngles": [
+              {
+                "Joint": "RightChest",
+                "Angle": 205
+              },
+              {
+                "Joint": "LeftChest",
+                "Angle": 85
+              },
+              {
+                "Joint": "RightBicep",
+                "Angle": 60
+              },
+              {
+                "Joint": "RightElbow",
+                "Angle": 115
+              },
+              {
+                "Joint": "HeadTurn",
+                "Angle": 150
+              },
+              {
+                "Joint": "TorsoBow",
+                "Angle": 115
+              }  
+            ]
+          }
+    ]
+}

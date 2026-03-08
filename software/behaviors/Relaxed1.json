@@ -1,0 +1,100 @@
+{
+"Name": "Relaxed1",
+"Keyframes": [
+    {
+        "HasAudio": "False",
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 1500,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "TorsoBow",
+            "Angle": 125
+          },
+          {
+            "Joint": "RightChest",
+            "Angle": 170
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 85
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 65
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 145
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 75
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 135
+          }
+        ],
+        "AudioClip": {
+            "ClipName": "",
+            "IsGroup": "False",
+            "Async": "True",
+            "Probability": 0
+        }
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightAnkle",
+            "Angle": 100
+          },
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 90
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightAnkle",
+            "Angle": 80
+          },
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 65
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightAnkle",
+            "Angle": 100
+          },
+          {
+            "Joint": "LeftAnkle",
+            "Angle": 90
+          }
+        ]
+      }
+    ]
+}

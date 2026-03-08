@@ -1,0 +1,66 @@
+{
+    "Name": "Listening",
+    "Keyframes": [
+        {
+            "HasEmote": "True",
+            "HasAudio": "False",
+            "AudioClip": "hmmmm",
+            "HasJoints": "True",
+            "Expression": "Happy",
+            "JointMoveTime": 10,
+            "WaitTime": 100,
+            "JointAngles": [
+                {
+                    "Joint": "RightChest",
+                    "Angle": 200
+                },
+                {
+                    "Joint": "RightBicep",
+                    "Angle": 95
+                },
+                {
+                    "Joint": "RightElbow",
+                    "Angle": 155
+                },
+                {
+                    "Joint": "HeadTurn",
+                    "Angle": 140
+                },
+                {
+                    "Joint": "HeadNod",
+                    "Angle": 135
+                }
+            ]
+        },
+        {
+            "HasEmote": "True",
+            "Expression": "Sleepy",
+            "HasAudio": "False",
+            "AudioClip": "hmmmm",
+            "HasJoints": "True",
+            "JointMoveTime": 10,
+            "WaitTime": 200,
+            "JointAngles": [
+                {
+                    "Joint": "HeadNod",
+                    "Angle": 125
+                }
+            ]
+        },
+        {
+            "HasEmote": "True",
+            "Expression": "Sleepy",
+            "HasAudio": "False",
+            "AudioClip": "hmmmm",
+            "HasJoints": "True",
+            "JointMoveTime": 10,
+            "WaitTime": 200,
+            "JointAngles": [
+                {
+                    "Joint": "HeadNod",
+                    "Angle": 135
+                }
+            ]
+        }
+    ]
+}

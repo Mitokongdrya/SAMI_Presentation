@@ -1,0 +1,37 @@
+{
+    "Name": "Surprise1",
+    "Keyframes": [
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 400,
+        "JointMoveTime": 5,
+        "JointAngles": [
+          {
+            "Joint": "RightChest",
+            "Angle": 175
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 75
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 145
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 70
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 75
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 150
+          }
+        ]
+      }
+    ]
+  }

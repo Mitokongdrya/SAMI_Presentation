@@ -1,0 +1,109 @@
+{
+    "Name": "Sleepy2",
+    "Keyframes": [
+      {
+        "HasJoints": "True",
+        "Expression": "Neutral",
+        "WaitTime": 1000,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftChest",
+            "Angle": 45
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 160
+          },
+          {
+            "Joint": "LeftShoulder",
+            "Angle": 155
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 60
+          },
+          {
+            "Joint": "TorsoBow",
+            "Angle": 125
+          },
+          {
+            "Joint": "HeadTurn",
+            "Angle": 130
+          },
+          {
+            "Joint": "LeftGripper",
+            "Angle": 140
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Sleepy",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 75
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Sleepy",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "TorsoBow",
+            "Angle": 115
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 60
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Sleepy",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "TorsoBow",
+            "Angle": 105
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 65
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 130
+          },
+          {
+            "Joint": "LeftShoulder",
+            "Angle": 175
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 60
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Sleepy",
+        "WaitTime": 100,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 100
+          }
+        ]
+      }
+    ]
+  }

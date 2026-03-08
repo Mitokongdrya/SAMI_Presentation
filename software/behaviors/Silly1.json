@@ -1,0 +1,125 @@
+{
+    "Name": "Silly1",
+    "Keyframes": [
+      {
+        "HasJoints": "True",
+        "Expression": "Happy",
+        "WaitTime": 150,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftShoulder",
+            "Angle": 90
+          },
+          {
+            "Joint": "RightShoulder",
+            "Angle": 180
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 30
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 180
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Happy",
+        "WaitTime": 150,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 150
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 140
+          },
+          {
+            "Joint": "TorsoTilt",
+            "Angle": 105
+          },
+          {
+            "Joint": "HeadTilt",
+            "Angle": 135
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Happy",
+        "WaitTime": 150,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 105
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 100
+          },
+          {
+            "Joint": "TorsoTilt",
+            "Angle": 115
+          },
+          {
+            "Joint": "HeadTilt",
+            "Angle": 125
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Happy",
+        "WaitTime": 150,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 150
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 140
+          },
+          {
+            "Joint": "TorsoTilt",
+            "Angle": 105
+          },
+          {
+            "Joint": "HeadTilt",
+            "Angle": 135
+          }
+        ]
+      },
+      {
+        "HasJoints": "True",
+        "Expression": "Happy",
+        "WaitTime": 150,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "LeftElbow",
+            "Angle": 105
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 100
+          },
+          {
+            "Joint": "TorsoTilt",
+            "Angle": 115
+          },
+          {
+            "Joint": "HeadTilt",
+            "Angle": 125
+          }
+        ]
+      }
+    ]
+  }

@@ -1,0 +1,64 @@
+{
+    "Name": "Thinking",
+    "Keyframes": [
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 500,
+        "JointMoveTime": 10,
+        "JointAngles": [
+          {
+            "Joint": "RightChest",
+            "Angle": 175
+          },
+          {
+            "Joint": "LeftChest",
+            "Angle": 100
+          },
+          {
+            "Joint": "LeftBicep",
+            "Angle": 165
+          },
+          {
+            "Joint": "RightBicep",
+            "Angle": 60
+          },
+          {
+            "Joint": "LeftElbow",
+            "Angle": 110
+          },
+          {
+            "Joint": "RightElbow",
+            "Angle": 150
+          },
+          {
+            "Joint": "LeftGripper",
+            "Angle": 140
+          },
+          {
+            "Joint": "RightGripper",
+            "Angle": 140
+          },
+          {
+            "Joint": "TorsoBow",
+            "Angle": 115
+          },
+          {
+            "Joint": "HeadNod",
+            "Angle": 135
+          }
+        ]
+      },
+      {
+        "HasEmote": "True",
+        "HasJoints": "True",
+        "Expression": "Closed",
+        "WaitTime": 500,
+        "JointMoveTime": 10,
+        "JointAngles": [
+
+        ]
+      }
+    ]
+  }
