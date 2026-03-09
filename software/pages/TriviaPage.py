@@ -451,7 +451,7 @@ class TriviaScorePage(QWidget):
         self.msg_label.setText(msg)
 
     def _play_again(self):
-        self.parent_ui.trivia_load_questions()
+        self.parent_ui.trivia_load_questions(limit=self.parent_ui.trivia_index)
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_question_page)
         self.parent_ui.trivia_question_page.load_question()
 
