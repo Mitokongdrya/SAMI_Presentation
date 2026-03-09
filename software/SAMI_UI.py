@@ -24,6 +24,9 @@ from components.button import Button
 from pages.HomePage import HomePage
 from pages.RatingPage import RatingPage
 from pages.TriviaPage import TriviaPage, TriviaQuestionPage, TriviaAnswerPage, TriviaScorePage
+from pages.data_page.DataPage import DataPage
+from pages.data_page.SensorDataPage import SensorDataPage
+from pages.data_page.RatingDataPage import RatingDataPage
 
 # ── UI MODE ────────────────────────────────────────────────────────────────────
 # Set to True  → full presentation UI  (pages, stack, trivia, etc.)
@@ -394,340 +397,340 @@ class ExerciseOverlay(QWidget):
         self.why_label.setText(why)
 
 
-# ==============================================================================
-# Data Page (hub)
-# ==============================================================================
+# # ==============================================================================
+# # Data Page (hub)
+# # ==============================================================================
 
-class DataPage(QWidget):
-    """
-    Hub page replacing the old SensorPage.
-    Presents two navigation buttons: Sensor Data and Rating Data.
-    """
+# class DataPage(QWidget):
+#     """
+#     Hub page replacing the old SensorPage.
+#     Presents two navigation buttons: Sensor Data and Rating Data.
+#     """
 
-    def __init__(self, parent_ui):
-        super().__init__()
+#     def __init__(self, parent_ui):
+#         super().__init__()
 
-        self.parent_ui = parent_ui
+#         self.parent_ui = parent_ui
 
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 0, 10, 10)
-        layout.setSpacing(8)
+#         layout = QVBoxLayout(self)
+#         layout.setContentsMargins(10, 0, 10, 10)
+#         layout.setSpacing(8)
 
-        # -- Page title --
-        title = QLabel("Data")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
-        layout.addStretch(1)
+#         # -- Page title --
+#         title = QLabel("Data")
+#         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+#         layout.addWidget(title)
+#         layout.addStretch(1)
 
-        # -- Navigation button grid --
-        grid = QGridLayout()
-        grid.setHorizontalSpacing(40)
-        grid.setVerticalSpacing(40)
+#         # -- Navigation button grid --
+#         grid = QGridLayout()
+#         grid.setHorizontalSpacing(40)
+#         grid.setVerticalSpacing(40)
 
-        sections = [
-            ("Sensor Demo", "icons/Sensor.svg"),
-            ("Rating Data", "icons/Rating.png"),
-        ]
+#         sections = [
+#             ("Sensor Demo", "icons/Sensor.svg"),
+#             ("Rating Data", "icons/Rating.png"),
+#         ]
 
-        for col, (name, icon_path) in enumerate(sections):
-            btn = QToolButton()
-            btn.setText(name)
-            btn.setIcon(QIcon(QPixmap(icon_path)))
-            btn.setIconSize(QSize(170, 170))
-            btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-            btn.setMinimumSize(400, 400)
-            btn.setStyleSheet("""
-                QToolButton {
-                    color: #000;
-                    font-size: 48px;
-                    font-weight: bold;
-                    padding: 20px;
-                    border-radius: 20px;
-                    background: #FFCCCC;
-                    border: 3px solid #333;
-                }
-                QToolButton:hover { background: #FFB3B3; }
-            """)
+#         for col, (name, icon_path) in enumerate(sections):
+#             btn = QToolButton()
+#             btn.setText(name)
+#             btn.setIcon(QIcon(QPixmap(icon_path)))
+#             btn.setIconSize(QSize(170, 170))
+#             btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+#             btn.setMinimumSize(400, 400)
+#             btn.setStyleSheet("""
+#                 QToolButton {
+#                     color: #000;
+#                     font-size: 48px;
+#                     font-weight: bold;
+#                     padding: 20px;
+#                     border-radius: 20px;
+#                     background: #FFCCCC;
+#                     border: 3px solid #333;
+#                 }
+#                 QToolButton:hover { background: #FFB3B3; }
+#             """)
 
-            if name == "Sensor Demo":
-                btn.clicked.connect(
-                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.sensor_data_page)
-                )
-            elif name == "Rating Data":
-                btn.clicked.connect(
-                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_data_page)
-                )
+#             if name == "Sensor Demo":
+#                 btn.clicked.connect(
+#                     lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.sensor_data_page)
+#                 )
+#             elif name == "Rating Data":
+#                 btn.clicked.connect(
+#                     lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_data_page)
+#                 )
 
-            grid.addWidget(btn, 0, col)
+#             grid.addWidget(btn, 0, col)
 
-        layout.addLayout(grid)
-        layout.addStretch(1)
+#         layout.addLayout(grid)
+#         layout.addStretch(1)
 
-        # -- Home button --
-        home_button = HomeButton("Return Home")
-        home_button.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
-        )
-        layout.addWidget(home_button)
-
-
-# ==============================================================================
-# Sensor Data Page
-# ==============================================================================
-
-class SensorDataPage(QWidget):
-    """
-    Displays a playable video (capstone-proof.mp4) using Qt's multimedia stack.
-    Provides Play/Pause and Stop controls beneath the video.
-    """
-
-    def __init__(self, parent_ui):
-        super().__init__()
-
-        self.parent_ui = parent_ui
-
-        from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
-        from PyQt6.QtMultimediaWidgets import QVideoWidget
-        from PyQt6.QtCore import QUrl
-
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(40, 20, 40, 20)
-        layout.setSpacing(16)
-
-        # -- Page title --
-        title = QLabel("Sensor Demo")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
-
-        # -- Video widget --
-        self.video_widget = QVideoWidget()
-        self.video_widget.setMinimumHeight(480)
-        self.video_widget.setStyleSheet("background: #000; border-radius: 12px;")
-        layout.addWidget(self.video_widget)
-
-        # -- Media player wired to the video widget --
-        self.player = QMediaPlayer()
-        self.audio_output = QAudioOutput()
-        self.player.setAudioOutput(self.audio_output)
-        self.player.setVideoOutput(self.video_widget)
-        self.player.setSource(QUrl.fromLocalFile(
-            os.path.abspath("icons/capstone-proof.mp4")
-        ))
-
-        # -- Playback controls --
-        controls = QHBoxLayout()
-        controls.setSpacing(24)
-        controls.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        BTN = """
-            QPushButton {
-                font-size: 32px; font-weight: bold; color: black;
-                border-radius: 16px; background: #FFCCCC; border: 3px solid #333;
-                padding: 12px 40px;
-            }
-            QPushButton:hover { background: #FFB3B3; }
-        """
-
-        play_btn = QPushButton("\u25b6  Play / Pause")
-        play_btn.setStyleSheet(BTN)
-        play_btn.setMinimumHeight(80)
-        play_btn.clicked.connect(self._toggle_play)
-        controls.addWidget(play_btn)
-
-        stop_btn = QPushButton("\u25a0  Stop")
-        stop_btn.setStyleSheet(BTN)
-        stop_btn.setMinimumHeight(80)
-        stop_btn.clicked.connect(self._stop)
-        controls.addWidget(stop_btn)
-
-        layout.addLayout(controls)
-        layout.addStretch(1)
-
-        # -- Back and Home buttons --
-        nav_row = QHBoxLayout()
-
-        back_btn = HomeButton("\u2190 Back")
-        back_btn.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
-        )
-        nav_row.addWidget(back_btn)
-
-        home_button = HomeButton("Return Home")
-        home_button.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
-        )
-        nav_row.addWidget(home_button)
-        layout.addLayout(nav_row)
-
-    def _toggle_play(self):
-        """Toggle between playing and paused."""
-        from PyQt6.QtMultimedia import QMediaPlayer
-        if self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
-            self.player.pause()
-        else:
-            self.player.play()
-
-    def _stop(self):
-        """Stop playback and return to the beginning."""
-        self.player.stop()
+#         # -- Home button --
+#         home_button = HomeButton("Return Home")
+#         home_button.clicked.connect(
+#             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
+#         )
+#         layout.addWidget(home_button)
 
 
-# ==============================================================================
-# Rating Data Page
-# ==============================================================================
+# # ==============================================================================
+# # Sensor Data Page
+# # ==============================================================================
 
-class RatingDataPage(QWidget):
-    """
-    Displays exercise rating history.
-    Shows per-exercise average summary cards and a full scrollable ratings table.
-    Reloads from disk every time the page is shown.
-    """
+# class SensorDataPage(QWidget):
+#     """
+#     Displays a playable video (capstone-proof.mp4) using Qt's multimedia stack.
+#     Provides Play/Pause and Stop controls beneath the video.
+#     """
 
-    def __init__(self, parent_ui):
-        super().__init__()
+#     def __init__(self, parent_ui):
+#         super().__init__()
 
-        self.parent_ui  = parent_ui
-        self.rating_file = "exercise_ratings.txt"
+#         self.parent_ui = parent_ui
 
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(40, 20, 40, 20)
-        layout.setSpacing(16)
+#         from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
+#         from PyQt6.QtMultimediaWidgets import QVideoWidget
+#         from PyQt6.QtCore import QUrl
 
-        # -- Page title --
-        title = QLabel("Rating Data")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+#         layout = QVBoxLayout(self)
+#         layout.setContentsMargins(40, 20, 40, 20)
+#         layout.setSpacing(16)
 
-        # -- Section heading --
-        ratings_title = QLabel("Exercise Ratings")
-        ratings_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        ratings_title.setStyleSheet("font-size: 36px; font-weight: bold; color: #333;")
-        layout.addWidget(ratings_title)
+#         # -- Page title --
+#         title = QLabel("Sensor Demo")
+#         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+#         layout.addWidget(title)
 
-        # -- Per-exercise average summary cards (populated dynamically) --
-        self.summary_layout = QHBoxLayout()
-        self.summary_layout.setSpacing(20)
-        layout.addLayout(self.summary_layout)
+#         # -- Video widget --
+#         self.video_widget = QVideoWidget()
+#         self.video_widget.setMinimumHeight(480)
+#         self.video_widget.setStyleSheet("background: #000; border-radius: 12px;")
+#         layout.addWidget(self.video_widget)
 
-        # -- Full ratings table --
-        from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
-        self.table = QTableWidget()
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["Timestamp", "Interaction", "Rating"])
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.table.setStyleSheet("""
-            QTableWidget {
-                color: #000;
-                font-size: 22px;
-                background: #fff;
-                border-radius: 12px;
-                border: 2px solid #aaa;
-            }
-            QHeaderView::section {
-                color: #000;
-                font-size: 24px;
-                font-weight: bold;
-                background: #FFCCCC;
-                border: 1px solid #aaa;
-                padding: 6px;
-            }
-        """)
-        self.table.setMinimumHeight(400)
-        layout.addWidget(self.table)
+#         # -- Media player wired to the video widget --
+#         self.player = QMediaPlayer()
+#         self.audio_output = QAudioOutput()
+#         self.player.setAudioOutput(self.audio_output)
+#         self.player.setVideoOutput(self.video_widget)
+#         self.player.setSource(QUrl.fromLocalFile(
+#             os.path.abspath("icons/capstone-proof.mp4")
+#         ))
 
-        # -- Back and Home buttons --
-        nav_row = QHBoxLayout()
+#         # -- Playback controls --
+#         controls = QHBoxLayout()
+#         controls.setSpacing(24)
+#         controls.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        back_btn = HomeButton("\u2190 Back")
-        back_btn.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
-        )
-        nav_row.addWidget(back_btn)
+#         BTN = """
+#             QPushButton {
+#                 font-size: 32px; font-weight: bold; color: black;
+#                 border-radius: 16px; background: #FFCCCC; border: 3px solid #333;
+#                 padding: 12px 40px;
+#             }
+#             QPushButton:hover { background: #FFB3B3; }
+#         """
 
-        home_button = HomeButton("Return Home")
-        home_button.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
-        )
-        nav_row.addWidget(home_button)
-        layout.addLayout(nav_row)
+#         play_btn = QPushButton("\u25b6  Play / Pause")
+#         play_btn.setStyleSheet(BTN)
+#         play_btn.setMinimumHeight(80)
+#         play_btn.clicked.connect(self._toggle_play)
+#         controls.addWidget(play_btn)
 
-    def showEvent(self, event):
-        """Reload ratings from disk every time this page becomes visible."""
-        super().showEvent(event)
-        self._load_ratings()
+#         stop_btn = QPushButton("\u25a0  Stop")
+#         stop_btn.setStyleSheet(BTN)
+#         stop_btn.setMinimumHeight(80)
+#         stop_btn.clicked.connect(self._stop)
+#         controls.addWidget(stop_btn)
 
-    def _load_ratings(self):
-        """
-        Parse exercise_ratings.txt, fill the table, and rebuild summary cards.
-        Each line is expected to be:  timestamp | exercise name | rating
-        """
-        from PyQt6.QtWidgets import QTableWidgetItem
-        from collections import defaultdict
+#         layout.addLayout(controls)
+#         layout.addStretch(1)
 
-        # -- Parse the ratings file --
-        rows = []
-        if os.path.exists(self.rating_file):
-            with open(self.rating_file, "r") as f:
-                for line in f:
-                    parts = [p.strip() for p in line.strip().split("|")]
-                    if len(parts) == 3:
-                        rows.append(parts)
+#         # -- Back and Home buttons --
+#         nav_row = QHBoxLayout()
 
-        # -- Populate the table, most-recent entry first --
-        self.table.setRowCount(len(rows))
-        for r, (ts, exercise, rating) in enumerate(reversed(rows)):
-            self.table.setItem(r, 0, QTableWidgetItem(ts))
-            self.table.setItem(r, 1, QTableWidgetItem(exercise))
-            rating_item = QTableWidgetItem(rating)
-            rating_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.table.setItem(r, 2, rating_item)
-        if self.table.rowCount() > 0:
-            self.table.setRowHeight(0, 48)
+#         back_btn = HomeButton("\u2190 Back")
+#         back_btn.clicked.connect(
+#             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
+#         )
+#         nav_row.addWidget(back_btn)
 
-        # -- Compute per-exercise averages (ignoring "None" entries) --
-        totals: dict = defaultdict(list)
-        for _, exercise, rating in rows:
-            if rating != "None":
-                try:
-                    totals[exercise].append(int(rating))
-                except ValueError:
-                    pass
+#         home_button = HomeButton("Return Home")
+#         home_button.clicked.connect(
+#             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
+#         )
+#         nav_row.addWidget(home_button)
+#         layout.addLayout(nav_row)
 
-        # -- Rebuild summary cards, clearing any previous ones first --
-        while self.summary_layout.count():
-            item = self.summary_layout.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+#     def _toggle_play(self):
+#         """Toggle between playing and paused."""
+#         from PyQt6.QtMultimedia import QMediaPlayer
+#         if self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+#             self.player.pause()
+#         else:
+#             self.player.play()
 
-        # Color scale mirrors the rating button colors on RatingPage
-        RATING_COLORS = {
-            "1": "#ff4d4d",
-            "2": "#ff944d",
-            "3": "#ffe666",
-            "4": "#b3ff66",
-            "5": "#66ff66",
-        }
+#     def _stop(self):
+#         """Stop playback and return to the beginning."""
+#         self.player.stop()
 
-        for exercise, values in sorted(totals.items()):
-            avg   = sum(values) / len(values)
-            color = RATING_COLORS.get(str(round(avg)), "#ccc")
-            card  = QLabel(f"{exercise}\n\u2605 {avg:.1f} ({len(values)} rated)")
-            card.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            card.setWordWrap(True)
-            card.setStyleSheet(f"""
-                background: {color};
-                border-radius: 14px;
-                border: 2px solid #333;
-                font-size: 22px;
-                font-weight: bold;
-                padding: 16px 24px;
-                color: #333;
-            """)
-            self.summary_layout.addWidget(card)
+
+# # ==============================================================================
+# # Rating Data Page
+# # ==============================================================================
+
+# class RatingDataPage(QWidget):
+#     """
+#     Displays exercise rating history.
+#     Shows per-exercise average summary cards and a full scrollable ratings table.
+#     Reloads from disk every time the page is shown.
+#     """
+
+#     def __init__(self, parent_ui):
+#         super().__init__()
+
+#         self.parent_ui  = parent_ui
+#         self.rating_file = "exercise_ratings.txt"
+
+#         layout = QVBoxLayout(self)
+#         layout.setContentsMargins(40, 20, 40, 20)
+#         layout.setSpacing(16)
+
+#         # -- Page title --
+#         title = QLabel("Rating Data")
+#         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+#         layout.addWidget(title)
+
+#         # -- Section heading --
+#         ratings_title = QLabel("Exercise Ratings")
+#         ratings_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#         ratings_title.setStyleSheet("font-size: 36px; font-weight: bold; color: #333;")
+#         layout.addWidget(ratings_title)
+
+#         # -- Per-exercise average summary cards (populated dynamically) --
+#         self.summary_layout = QHBoxLayout()
+#         self.summary_layout.setSpacing(20)
+#         layout.addLayout(self.summary_layout)
+
+#         # -- Full ratings table --
+#         from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
+#         self.table = QTableWidget()
+#         self.table.setColumnCount(3)
+#         self.table.setHorizontalHeaderLabels(["Timestamp", "Interaction", "Rating"])
+#         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+#         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+#         self.table.setStyleSheet("""
+#             QTableWidget {
+#                 color: #000;
+#                 font-size: 22px;
+#                 background: #fff;
+#                 border-radius: 12px;
+#                 border: 2px solid #aaa;
+#             }
+#             QHeaderView::section {
+#                 color: #000;
+#                 font-size: 24px;
+#                 font-weight: bold;
+#                 background: #FFCCCC;
+#                 border: 1px solid #aaa;
+#                 padding: 6px;
+#             }
+#         """)
+#         self.table.setMinimumHeight(400)
+#         layout.addWidget(self.table)
+
+#         # -- Back and Home buttons --
+#         nav_row = QHBoxLayout()
+
+#         back_btn = HomeButton("\u2190 Back")
+#         back_btn.clicked.connect(
+#             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
+#         )
+#         nav_row.addWidget(back_btn)
+
+#         home_button = HomeButton("Return Home")
+#         home_button.clicked.connect(
+#             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
+#         )
+#         nav_row.addWidget(home_button)
+#         layout.addLayout(nav_row)
+
+#     def showEvent(self, event):
+#         """Reload ratings from disk every time this page becomes visible."""
+#         super().showEvent(event)
+#         self._load_ratings()
+
+#     def _load_ratings(self):
+#         """
+#         Parse exercise_ratings.txt, fill the table, and rebuild summary cards.
+#         Each line is expected to be:  timestamp | exercise name | rating
+#         """
+#         from PyQt6.QtWidgets import QTableWidgetItem
+#         from collections import defaultdict
+
+#         # -- Parse the ratings file --
+#         rows = []
+#         if os.path.exists(self.rating_file):
+#             with open(self.rating_file, "r") as f:
+#                 for line in f:
+#                     parts = [p.strip() for p in line.strip().split("|")]
+#                     if len(parts) == 3:
+#                         rows.append(parts)
+
+#         # -- Populate the table, most-recent entry first --
+#         self.table.setRowCount(len(rows))
+#         for r, (ts, exercise, rating) in enumerate(reversed(rows)):
+#             self.table.setItem(r, 0, QTableWidgetItem(ts))
+#             self.table.setItem(r, 1, QTableWidgetItem(exercise))
+#             rating_item = QTableWidgetItem(rating)
+#             rating_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+#             self.table.setItem(r, 2, rating_item)
+#         if self.table.rowCount() > 0:
+#             self.table.setRowHeight(0, 48)
+
+#         # -- Compute per-exercise averages (ignoring "None" entries) --
+#         totals: dict = defaultdict(list)
+#         for _, exercise, rating in rows:
+#             if rating != "None":
+#                 try:
+#                     totals[exercise].append(int(rating))
+#                 except ValueError:
+#                     pass
+
+#         # -- Rebuild summary cards, clearing any previous ones first --
+#         while self.summary_layout.count():
+#             item = self.summary_layout.takeAt(0)
+#             if item.widget():
+#                 item.widget().deleteLater()
+
+#         # Color scale mirrors the rating button colors on RatingPage
+#         RATING_COLORS = {
+#             "1": "#ff4d4d",
+#             "2": "#ff944d",
+#             "3": "#ffe666",
+#             "4": "#b3ff66",
+#             "5": "#66ff66",
+#         }
+
+#         for exercise, values in sorted(totals.items()):
+#             avg   = sum(values) / len(values)
+#             color = RATING_COLORS.get(str(round(avg)), "#ccc")
+#             card  = QLabel(f"{exercise}\n\u2605 {avg:.1f} ({len(values)} rated)")
+#             card.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#             card.setWordWrap(True)
+#             card.setStyleSheet(f"""
+#                 background: {color};
+#                 border-radius: 14px;
+#                 border: 2px solid #333;
+#                 font-size: 22px;
+#                 font-weight: bold;
+#                 padding: 16px 24px;
+#                 color: #333;
+#             """)
+#             self.summary_layout.addWidget(card)
 
 # class RatingPage(QWidget):
 #     def __init__(self, parent_ui):
