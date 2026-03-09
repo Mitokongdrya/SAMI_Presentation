@@ -45,7 +45,7 @@ class HomePage(QWidget):
         interactions = [
             ("Exercises", "icons/Exercises.png"),
             ("Trivia", "icons/Trivia.png"),
-            ("Data", "icons/Sensor.svg")
+            ("Data", "icons/data.svg")
         ]
 
         for col, (name, icon_path) in enumerate(interactions):
@@ -77,10 +77,7 @@ class HomePage(QWidget):
                 )
             elif name == "Data":
                 interaction_btn.clicked.connect(
-                    lambda: (
-                        self.parent_ui.move_to_home(),  # first move robot home
-                        self.parent_ui.stack.setCurrentWidget(self.parent_ui.sensor_page)  # then go to sensor page
-                    )
+                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
                 )
             elif name == "Trivia":
                 interaction_btn.clicked.connect(
@@ -129,7 +126,7 @@ class ExercisePage(QWidget):
         # behaviors = self.parent_ui.get_behavior_files()
         self.exercise_config = [
             {"title": "Wave", "description": "Wave hello to the adoring fans", "file": "Wave.json", "video": "icons/HeartBox.gif"},
-            {"title": "Shrug", "description": "Pose like Jesus", "file": "Shrug.json", "video": "icons/HeartFly.gif"},
+            {"title": "Shrug", "description": "Shrug your shoulders", "file": "Shrug.json", "video": "icons/HeartFly.gif"},
             {"title": "Side Stretch", "description": "Helps with core strength", "file": "SideToSide.json", "video": "icons/SideToSide.gif"},
         ]
 
@@ -297,7 +294,11 @@ class ExercisePage(QWidget):
         # Re-enable buttons
         self.set_buttons_enabled(True)
 
-        # Go to rating page
+        # Send robot back to home position
+        self.parent_ui.start_behavior("Home.json", on_finished=self._go_to_rating)
+
+    def _go_to_rating(self):
+        # Called once Home.json finishes — now safe to show rating page
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_page)
 
 
@@ -323,35 +324,226 @@ class ExerciseOverlay(QWidget):
         layout.addWidget(label)
 
 
-class SensorPage(QWidget):
+# ==============================================================================
+# Data Page (hub)
+# ==============================================================================
+
+class DataPage(QWidget):
+    """
+    Hub page replacing the old SensorPage.
+    Presents two navigation buttons: Sensor Data and Rating Data.
+    """
+
     def __init__(self, parent_ui):
         super().__init__()
 
         self.parent_ui = parent_ui
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 0, 10, 10)
+        layout.setSpacing(8)
+
+        # -- Page title --
+        title = QLabel("Data")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+        layout.addWidget(title)
+        layout.addStretch(1)
+
+        # -- Navigation button grid --
+        grid = QGridLayout()
+        grid.setHorizontalSpacing(40)
+        grid.setVerticalSpacing(40)
+
+        sections = [
+            ("Sensor Demo", "icons/Sensor.svg"),
+            ("Rating Data", "icons/Rating.png"),
+        ]
+
+        for col, (name, icon_path) in enumerate(sections):
+            btn = QToolButton()
+            btn.setText(name)
+            btn.setIcon(QIcon(QPixmap(icon_path)))
+            btn.setIconSize(QSize(170, 170))
+            btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+            btn.setMinimumSize(400, 400)
+            btn.setStyleSheet("""
+                QToolButton {
+                    color: #000;
+                    font-size: 48px;
+                    font-weight: bold;
+                    padding: 20px;
+                    border-radius: 20px;
+                    background: #FFCCCC;
+                    border: 3px solid #333;
+                }
+                QToolButton:hover { background: #FFB3B3; }
+            """)
+
+            if name == "Sensor Demo":
+                btn.clicked.connect(
+                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.sensor_data_page)
+                )
+            elif name == "Rating Data":
+                btn.clicked.connect(
+                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_data_page)
+                )
+
+            grid.addWidget(btn, 0, col)
+
+        layout.addLayout(grid)
+        layout.addStretch(1)
+
+        # -- Home button --
+        home_button = HomeButton("Return Home")
+        home_button.clicked.connect(
+            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
+        )
+        layout.addWidget(home_button)
+
+
+# ==============================================================================
+# Sensor Data Page
+# ==============================================================================
+
+class SensorDataPage(QWidget):
+    """
+    Displays a playable video (capstone-proof.mp4) using Qt's multimedia stack.
+    Provides Play/Pause and Stop controls beneath the video.
+    """
+
+    def __init__(self, parent_ui):
+        super().__init__()
+
+        self.parent_ui = parent_ui
+
+        from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
+        from PyQt6.QtMultimediaWidgets import QVideoWidget
+        from PyQt6.QtCore import QUrl
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(40, 20, 40, 20)
+        layout.setSpacing(16)
+
+        # -- Page title --
+        title = QLabel("Sensor Data")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+        layout.addWidget(title)
+
+        # -- Video widget --
+        self.video_widget = QVideoWidget()
+        self.video_widget.setMinimumHeight(480)
+        self.video_widget.setStyleSheet("background: #000; border-radius: 12px;")
+        layout.addWidget(self.video_widget)
+
+        # -- Media player wired to the video widget --
+        self.player = QMediaPlayer()
+        self.audio_output = QAudioOutput()
+        self.player.setAudioOutput(self.audio_output)
+        self.player.setVideoOutput(self.video_widget)
+        self.player.setSource(QUrl.fromLocalFile(
+            os.path.abspath("icons/capstone-proof.mp4")
+        ))
+
+        # -- Playback controls --
+        controls = QHBoxLayout()
+        controls.setSpacing(24)
+        controls.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        BTN = """
+            QPushButton {
+                font-size: 32px; font-weight: bold; color: black;
+                border-radius: 16px; background: #FFCCCC; border: 3px solid #333;
+                padding: 12px 40px;
+            }
+            QPushButton:hover { background: #FFB3B3; }
+        """
+
+        play_btn = QPushButton("\u25b6  Play / Pause")
+        play_btn.setStyleSheet(BTN)
+        play_btn.setMinimumHeight(80)
+        play_btn.clicked.connect(self._toggle_play)
+        controls.addWidget(play_btn)
+
+        stop_btn = QPushButton("\u25a0  Stop")
+        stop_btn.setStyleSheet(BTN)
+        stop_btn.setMinimumHeight(80)
+        stop_btn.clicked.connect(self._stop)
+        controls.addWidget(stop_btn)
+
+        layout.addLayout(controls)
+        layout.addStretch(1)
+
+        # -- Back and Home buttons --
+        nav_row = QHBoxLayout()
+
+        back_btn = HomeButton("\u2190 Back")
+        back_btn.clicked.connect(
+            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
+        )
+        nav_row.addWidget(back_btn)
+
+        home_button = HomeButton("Return Home")
+        home_button.clicked.connect(
+            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
+        )
+        nav_row.addWidget(home_button)
+        layout.addLayout(nav_row)
+
+    def _toggle_play(self):
+        """Toggle between playing and paused."""
+        from PyQt6.QtMultimedia import QMediaPlayer
+        if self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.player.pause()
+        else:
+            self.player.play()
+
+    def _stop(self):
+        """Stop playback and return to the beginning."""
+        self.player.stop()
+
+
+# ==============================================================================
+# Rating Data Page
+# ==============================================================================
+
+class RatingDataPage(QWidget):
+    """
+    Displays exercise rating history.
+    Shows per-exercise average summary cards and a full scrollable ratings table.
+    Reloads from disk every time the page is shown.
+    """
+
+    def __init__(self, parent_ui):
+        super().__init__()
+
+        self.parent_ui  = parent_ui
         self.rating_file = "exercise_ratings.txt"
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(40, 20, 40, 20)
         layout.setSpacing(16)
 
-        title = QLabel("Sensor Statistics")
+        # -- Page title --
+        title = QLabel("Rating Data")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
 
-        # -------- Ratings section -------- #
+        # -- Section heading --
         ratings_title = QLabel("Exercise Ratings")
         ratings_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         ratings_title.setStyleSheet("font-size: 36px; font-weight: bold; color: #333;")
         layout.addWidget(ratings_title)
 
-        # Summary row (per-exercise averages)
+        # -- Per-exercise average summary cards (populated dynamically) --
         self.summary_layout = QHBoxLayout()
         self.summary_layout.setSpacing(20)
         layout.addLayout(self.summary_layout)
 
-        # Scrollable recent-ratings table
-        from PyQt6.QtWidgets import QScrollArea, QTableWidget, QTableWidgetItem, QHeaderView
+        # -- Full ratings table --
+        from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
         self.table = QTableWidget()
         self.table.setColumnCount(3)
         self.table.setHorizontalHeaderLabels(["Timestamp", "Interaction", "Rating"])
@@ -377,19 +569,36 @@ class SensorPage(QWidget):
         self.table.setMinimumHeight(400)
         layout.addWidget(self.table)
 
-        # Add a button to return home
+        # -- Back and Home buttons --
+        nav_row = QHBoxLayout()
+
+        back_btn = HomeButton("\u2190 Back")
+        back_btn.clicked.connect(
+            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
+        )
+        nav_row.addWidget(back_btn)
+
         home_button = HomeButton("Return Home")
-        home_button.clicked.connect(lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page))
-        layout.addWidget(home_button)
+        home_button.clicked.connect(
+            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
+        )
+        nav_row.addWidget(home_button)
+        layout.addLayout(nav_row)
 
     def showEvent(self, event):
-        """Reload ratings every time this page becomes visible."""
+        """Reload ratings from disk every time this page becomes visible."""
         super().showEvent(event)
         self._load_ratings()
 
     def _load_ratings(self):
-        from PyQt6.QtWidgets import QTableWidgetItem, QScrollArea
+        """
+        Parse exercise_ratings.txt, fill the table, and rebuild summary cards.
+        Each line is expected to be:  timestamp | exercise name | rating
+        """
+        from PyQt6.QtWidgets import QTableWidgetItem
+        from collections import defaultdict
 
+        # -- Parse the ratings file --
         rows = []
         if os.path.exists(self.rating_file):
             with open(self.rating_file, "r") as f:
@@ -398,7 +607,7 @@ class SensorPage(QWidget):
                     if len(parts) == 3:
                         rows.append(parts)
 
-        # ---- Populate table (most-recent first) ---- #
+        # -- Populate the table, most-recent entry first --
         self.table.setRowCount(len(rows))
         for r, (ts, exercise, rating) in enumerate(reversed(rows)):
             self.table.setItem(r, 0, QTableWidgetItem(ts))
@@ -409,8 +618,7 @@ class SensorPage(QWidget):
         if self.table.rowCount() > 0:
             self.table.setRowHeight(0, 48)
 
-        # ---- Compute per-exercise averages ---- #
-        from collections import defaultdict
+        # -- Compute per-exercise averages (ignoring "None" entries) --
         totals: dict = defaultdict(list)
         for _, exercise, rating in rows:
             if rating != "None":
@@ -419,18 +627,25 @@ class SensorPage(QWidget):
                 except ValueError:
                     pass
 
-        # Clear old summary cards
+        # -- Rebuild summary cards, clearing any previous ones first --
         while self.summary_layout.count():
             item = self.summary_layout.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
 
-        COLORS = {"1": "#ff4d4d", "2": "#ff944d", "3": "#ffe666", "4": "#b3ff66", "5": "#66ff66"}
+        # Color scale mirrors the rating button colors on RatingPage
+        RATING_COLORS = {
+            "1": "#ff4d4d",
+            "2": "#ff944d",
+            "3": "#ffe666",
+            "4": "#b3ff66",
+            "5": "#66ff66",
+        }
+
         for exercise, values in sorted(totals.items()):
-            avg = sum(values) / len(values)
-            avg_str = f"{avg:.1f}"
-            color = COLORS.get(str(round(avg)), "#ccc")
-            card = QLabel(f"{exercise}\n★ {avg_str} ({len(values)} rated)")
+            avg   = sum(values) / len(values)
+            color = RATING_COLORS.get(str(round(avg)), "#ccc")
+            card  = QLabel(f"{exercise}\n\u2605 {avg:.1f} ({len(values)} rated)")
             card.setAlignment(Qt.AlignmentFlag.AlignCenter)
             card.setWordWrap(True)
             card.setStyleSheet(f"""
@@ -443,7 +658,6 @@ class SensorPage(QWidget):
                 color: #333;
             """)
             self.summary_layout.addWidget(card)
-
 
 class RatingPage(QWidget):
     def __init__(self, parent_ui):
@@ -1056,8 +1270,17 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.stack.addWidget(self.exercise_overlay)
 
         # -------- SENSOR PAGE -------- #
-        self.sensor_page = SensorPage(self)
-        self.stack.addWidget(self.sensor_page)
+        # -------- DATA PAGE (hub) -------- #
+        self.data_page = DataPage(self)
+        self.stack.addWidget(self.data_page)
+
+        # -------- SENSOR DATA PAGE -------- #
+        self.sensor_data_page = SensorDataPage(self)
+        self.stack.addWidget(self.sensor_data_page)
+
+        # -------- RATING DATA PAGE -------- #
+        self.rating_data_page = RatingDataPage(self)
+        self.stack.addWidget(self.rating_data_page)
 
         # -------- RATING PAGE -------- #
         self.rating_page = RatingPage(self)
