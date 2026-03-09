@@ -21,6 +21,8 @@ from PyQt6.QtCore import Qt, QSize, QTimer
 from SAMIControl import SAMIControl
 from components.home_button import HomeButton
 from components.button import Button
+from pages.HomePage import HomePage
+from pages.RatingPage import RatingPage
 
 # ── UI MODE ────────────────────────────────────────────────────────────────────
 # Set to True  → full presentation UI  (pages, stack, trivia, etc.)
@@ -31,82 +33,82 @@ USE_NEW_UI = True
 
 
 
-class HomePage(QWidget):
-    def __init__(self, parent_ui):
-        super().__init__()
+# class HomePage(QWidget):
+#     def __init__(self, parent_ui):
+#         super().__init__()
 
-        self.parent_ui = parent_ui  # reference to main window
+#         self.parent_ui = parent_ui  # reference to main window
 
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 0, 10, 10)
-        layout.setSpacing(8)
+#         layout = QVBoxLayout(self)
+#         layout.setContentsMargins(10, 0, 10, 10)
+#         layout.setSpacing(8)
 
-        # Title
-        title = QLabel("Select an Interaction")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
-        layout.addStretch(1)
+#         # Title
+#         title = QLabel("Select an Interaction")
+#         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+#         layout.addWidget(title)
+#         layout.addStretch(1)
 
-        # Grid
-        grid = QGridLayout()
-        grid.setHorizontalSpacing(40)
-        grid.setVerticalSpacing(40)
+#         # Grid
+#         grid = QGridLayout()
+#         grid.setHorizontalSpacing(40)
+#         grid.setVerticalSpacing(40)
 
-        interactions = [
-            ("Exercises", "icons/Exercises.png"),
-            ("Trivia", "icons/Trivia.png"),
-            ("Data", "icons/data.svg")
-        ]
+#         interactions = [
+#             ("Exercises", "icons/Exercises.png"),
+#             ("Trivia", "icons/Trivia.png"),
+#             ("Data", "icons/data.svg")
+#         ]
 
-        for col, (name, icon_path) in enumerate(interactions):
-            interaction_btn = QToolButton()
-            interaction_btn.setText(name)
-            interaction_btn.setIcon(QIcon(QPixmap(icon_path)))
-            interaction_btn.setIconSize(QSize(170, 170))
-            interaction_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-            interaction_btn.setMinimumSize(400, 400)
+#         for col, (name, icon_path) in enumerate(interactions):
+#             interaction_btn = QToolButton()
+#             interaction_btn.setText(name)
+#             interaction_btn.setIcon(QIcon(QPixmap(icon_path)))
+#             interaction_btn.setIconSize(QSize(170, 170))
+#             interaction_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+#             interaction_btn.setMinimumSize(400, 400)
 
-            interaction_btn.setStyleSheet("""
-            QToolButton {
-                color: #000;
-                font-size: 48px;
-                font-weight: bold;
-                padding: 20px;
-                border-radius: 20px;
-                background: #FFCCCC;
-                border: 3px solid #333;
-            }
-            """)
+#             interaction_btn.setStyleSheet("""
+#             QToolButton {
+#                 color: #000;
+#                 font-size: 48px;
+#                 font-weight: bold;
+#                 padding: 20px;
+#                 border-radius: 20px;
+#                 background: #FFCCCC;
+#                 border: 3px solid #333;
+#             }
+#             """)
 
-            if name == "Exercises":
-                interaction_btn.clicked.connect(
-                    lambda: (
-                        self.parent_ui.move_to_home(),  # first move robot home
-                        self.parent_ui.stack.setCurrentWidget(self.parent_ui.exercise_page)  # then go to exercise page
-                    )
-                )
-            elif name == "Data":
-                interaction_btn.clicked.connect(
-                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
-                )
-            elif name == "Trivia":
-                interaction_btn.clicked.connect(
-                    lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_page)
-                )
-            else:
-                interaction_btn.clicked.connect(
-                    lambda _, n=name: print(f"{n} clicked")
-                )
+#             if name == "Exercises":
+#                 interaction_btn.clicked.connect(
+#                     lambda: (
+#                         self.parent_ui.move_to_home(),  # first move robot home
+#                         self.parent_ui.stack.setCurrentWidget(self.parent_ui.exercise_page)  # then go to exercise page
+#                     )
+#                 )
+#             elif name == "Data":
+#                 interaction_btn.clicked.connect(
+#                     lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
+#                 )
+#             elif name == "Trivia":
+#                 interaction_btn.clicked.connect(
+#                     lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_page)
+#                 )
+#             else:
+#                 interaction_btn.clicked.connect(
+#                     lambda _, n=name: print(f"{n} clicked")
+#                 )
 
-            grid.addWidget(interaction_btn, 0, col)
+#             grid.addWidget(interaction_btn, 0, col)
 
-        layout.addLayout(grid)
-        layout.addStretch(1)
+#         layout.addLayout(grid)
+#         layout.addStretch(1)
 
-        # home_robot_btn = QPushButton("Home", self)
-        # home_robot_btn.clicked.connect(self.parent_ui.move_to_home)
-        # layout.addWidget(home_robot_btn)
+#         # home_robot_btn = QPushButton("Home", self)
+#         # home_robot_btn.clicked.connect(self.parent_ui.move_to_home)
+#         # layout.addWidget(home_robot_btn)
 
 
 
@@ -726,74 +728,74 @@ class RatingDataPage(QWidget):
             """)
             self.summary_layout.addWidget(card)
 
-class RatingPage(QWidget):
-    def __init__(self, parent_ui):
-        super().__init__()
+# class RatingPage(QWidget):
+#     def __init__(self, parent_ui):
+#         super().__init__()
 
-        self.parent_ui = parent_ui
+#         self.parent_ui = parent_ui
 
-        layout = QVBoxLayout(self)
+#         layout = QVBoxLayout(self)
 
-        title = QLabel("Rate this Exercise")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
-        layout.addStretch(1)
+#         title = QLabel("Rate this Exercise")
+#         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+#         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+#         layout.addWidget(title)
+#         layout.addStretch(1)
 
-        row = QHBoxLayout()
-        row.setSpacing(40)
-        layout.addLayout(row)
+#         row = QHBoxLayout()
+#         row.setSpacing(40)
+#         layout.addLayout(row)
 
-        self.group = QButtonGroup(self)
-        self.group.setExclusive(True)
+#         self.group = QButtonGroup(self)
+#         self.group.setExclusive(True)
 
-        ratings = [
-            ("Bad", 1, "#ff4d4d", "icons/Bad.png"),
-            ("Poor", 2, "#ff944d", "icons/Poor.png"),
-            ("Neutral", 3, "#ffe666", "icons/Neutral.png"),
-            ("Good", 4, "#b3ff66", "icons/Good.png"),
-            ("Excellent", 5, "#66ff66", "icons/Excellent.png"),
-        ]
+#         ratings = [
+#             ("Bad", 1, "#ff4d4d", "icons/Bad.png"),
+#             ("Poor", 2, "#ff944d", "icons/Poor.png"),
+#             ("Neutral", 3, "#ffe666", "icons/Neutral.png"),
+#             ("Good", 4, "#b3ff66", "icons/Good.png"),
+#             ("Excellent", 5, "#66ff66", "icons/Excellent.png"),
+#         ]
 
-        for label, value, color, icon_path in ratings:
-            rating_btn = QToolButton()
-            rating_btn.setText(label)
-            rating_btn.setCheckable(True)
-            rating_btn.setIcon(QIcon(QPixmap(icon_path)))
-            rating_btn.setIconSize(QSize(170, 170))
-            rating_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-            rating_btn.setFixedSize(200, 400)
-            rating_btn.setStyleSheet(f"""
-                QToolButton {{
-                    background-color: {color};
-                    border-radius: 20px;
-                    font-size: 32px;
-                    font-weight: bold;
-                    color: black;
-                    border: 3px solid #333;
-                    padding-top: 60px;
-                    padding-bottom: 40px;
-                }}
-            """)
+#         for label, value, color, icon_path in ratings:
+#             rating_btn = QToolButton()
+#             rating_btn.setText(label)
+#             rating_btn.setCheckable(True)
+#             rating_btn.setIcon(QIcon(QPixmap(icon_path)))
+#             rating_btn.setIconSize(QSize(170, 170))
+#             rating_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+#             rating_btn.setFixedSize(200, 400)
+#             rating_btn.setStyleSheet(f"""
+#                 QToolButton {{
+#                     background-color: {color};
+#                     border-radius: 20px;
+#                     font-size: 32px;
+#                     font-weight: bold;
+#                     color: black;
+#                     border: 3px solid #333;
+#                     padding-top: 60px;
+#                     padding-bottom: 40px;
+#                 }}
+#             """)
 
-            rating_btn.clicked.connect(lambda _, v=value: self.parent_ui.submit_rating(v))
+#             rating_btn.clicked.connect(lambda _, v=value: self.parent_ui.submit_rating(v))
 
-            self.group.addButton(rating_btn)
-            row.addWidget(rating_btn)
+#             self.group.addButton(rating_btn)
+#             row.addWidget(rating_btn)
 
-        self.no_rate_btn = Button("Prefer Not To Rate", 300, 80, "#E6EEF3")
-        layout.addWidget(self.no_rate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
-        self.no_rate_btn.clicked.connect(lambda: self.parent_ui.submit_rating("None"))
+#         self.no_rate_btn = Button("Prefer Not To Rate", 300, 80, "#E6EEF3")
+#         layout.addWidget(self.no_rate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+#         self.no_rate_btn.clicked.connect(lambda: self.parent_ui.submit_rating("None"))
 
-        layout.addStretch(1)
+#         layout.addStretch(1)
 
-        # Add a button to return home
-        home_button = HomeButton("Return Home")
-        layout.addWidget(home_button)
+#         # Add a button to return home
+#         home_button = HomeButton("Return Home")
+#         layout.addWidget(home_button)
 
    
-        home_button.clicked.connect(lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page))
-        layout.addWidget(home_button)
+#         home_button.clicked.connect(lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page))
+#         layout.addWidget(home_button)
 
 
 

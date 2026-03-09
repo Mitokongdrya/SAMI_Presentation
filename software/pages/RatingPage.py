@@ -1,0 +1,80 @@
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QStackedWidget, QWidget,
+    QVBoxLayout, QHBoxLayout, QGridLayout,
+    QLabel, QPushButton, QToolButton, QButtonGroup,
+    QDialog
+)
+from PyQt6.QtGui import QIcon, QPixmap, QMovie
+from PyQt6.QtCore import Qt, QSize, QTimer
+
+from components.home_button import HomeButton
+from components.button import Button
+
+class RatingPage(QWidget):
+    def __init__(self, parent_ui):
+        super().__init__()
+
+        self.parent_ui = parent_ui
+
+        layout = QVBoxLayout(self)
+
+        title = QLabel("Rate this Exercise")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+        layout.addWidget(title)
+        layout.addStretch(1)
+
+        row = QHBoxLayout()
+        row.setSpacing(40)
+        layout.addLayout(row)
+
+        self.group = QButtonGroup(self)
+        self.group.setExclusive(True)
+
+        ratings = [
+            ("Bad", 1, "#ff4d4d", "icons/Bad.png"),
+            ("Poor", 2, "#ff944d", "icons/Poor.png"),
+            ("Neutral", 3, "#ffe666", "icons/Neutral.png"),
+            ("Good", 4, "#b3ff66", "icons/Good.png"),
+            ("Excellent", 5, "#66ff66", "icons/Excellent.png"),
+        ]
+
+        for label, value, color, icon_path in ratings:
+            rating_btn = QToolButton()
+            rating_btn.setText(label)
+            rating_btn.setCheckable(True)
+            rating_btn.setIcon(QIcon(QPixmap(icon_path)))
+            rating_btn.setIconSize(QSize(170, 170))
+            rating_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+            rating_btn.setFixedSize(200, 400)
+            rating_btn.setStyleSheet(f"""
+                QToolButton {{
+                    background-color: {color};
+                    border-radius: 20px;
+                    font-size: 32px;
+                    font-weight: bold;
+                    color: black;
+                    border: 3px solid #333;
+                    padding-top: 60px;
+                    padding-bottom: 40px;
+                }}
+            """)
+
+            rating_btn.clicked.connect(lambda _, v=value: self.parent_ui.submit_rating(v))
+
+            self.group.addButton(rating_btn)
+            row.addWidget(rating_btn)
+
+        self.no_rate_btn = Button("Prefer Not To Rate", 300, 80, "#E6EEF3")
+        layout.addWidget(self.no_rate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.no_rate_btn.clicked.connect(lambda: self.parent_ui.submit_rating("None"))
+
+        layout.addStretch(1)
+
+        # Add a button to return home
+        home_button = HomeButton("Return Home")
+        layout.addWidget(home_button)
+
+   
+        home_button.clicked.connect(lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page))
+        layout.addWidget(home_button)
