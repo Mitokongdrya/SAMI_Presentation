@@ -6,16 +6,27 @@ import csv
 import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-# from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QComboBox
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QToolButton, QButtonGroup, QMainWindow, QStackedWidget, QApplication, QPushButton, QHBoxLayout, QDialog
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize
-from SAMIControl import SAMIControl
 
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton
-from PyQt6.QtCore import Qt, QTimer
+# PyQt6 — widgets, gui helpers, and core utilities
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QStackedWidget, QWidget,
+    QVBoxLayout, QHBoxLayout, QGridLayout,
+    QLabel, QPushButton, QToolButton, QButtonGroup,
+    QDialog
+)
+from PyQt6.QtGui import QIcon, QPixmap, QMovie
+from PyQt6.QtCore import Qt, QSize, QTimer
+
+# Project modules
+from SAMIControl import SAMIControl
 from components.home_button import HomeButton
 from components.button import Button
+
+# ── UI MODE ────────────────────────────────────────────────────────────────────
+# Set to True  → full presentation UI  (pages, stack, trivia, etc.)
+# Set to False → legacy debug UI       (joint dropdowns, raw commands)
+USE_NEW_UI = True
+# ──────────────────────────────────────────────────────────────────────────────
 
 
 
@@ -99,6 +110,8 @@ class HomePage(QWidget):
 
 
 
+
+
 class ExercisePage(QWidget):
     def __init__(self, parent_ui):
         super().__init__()
@@ -110,7 +123,7 @@ class ExercisePage(QWidget):
         layout.setSpacing(8)
 
         # -------- Title -------- #
-        title = QLabel("Select a Pose for SAMI")
+        title = QLabel("Select an Exercise to Perform")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
@@ -125,9 +138,12 @@ class ExercisePage(QWidget):
         # Get first 6 behavior files dynamically
         # behaviors = self.parent_ui.get_behavior_files()
         self.exercise_config = [
-            {"title": "Wave", "description": "Wave hello to the adoring fans", "file": "Wave.json", "video": "icons/HeartBox.gif"},
-            {"title": "Shrug", "description": "Shrug your shoulders", "file": "Shrug.json", "video": "icons/HeartFly.gif"},
-            {"title": "Side Stretch", "description": "Helps with core strength", "file": "SideToSide.json", "video": "icons/SideToSide.gif"},
+            {"title": "Wave", "description": "Wave hello to the adoring fans", "file": "Wave.json", "video": "icons/Waving.gif",
+             "why": "Waving engages the shoulder and elbow joints, promoting upper limb mobility and coordination."},
+            {"title": "Shrug", "description": "What's Happening?", "file": "Shrug.json", "video": "icons/Shrug.gif",
+             "why": "Shoulder shrugs strengthen the trapezius muscles and help release tension in the neck and upper back."},
+            {"title": "Side Stretch", "description": "Helps with core strength", "file": "SideToSide.json", "video": "icons/SideToSide.gif",
+             "why": "Side-to-side stretching improves spinal flexibility, activates the obliques, and enhances balance."},
         ]
 
         # single row with 3 columns (show first 3 exercises)
@@ -139,8 +155,8 @@ class ExercisePage(QWidget):
             # Create container widget for this grid cell
             cell_widget = QWidget()
             cell_layout = QVBoxLayout(cell_widget)
-            cell_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             cell_layout.setSpacing(10)
+            # No AlignCenter — stretch between GIF and button pins all buttons to the same bottom edge
 
             # -------- GIF -------- #
             gif_label = QLabel()
@@ -151,6 +167,9 @@ class ExercisePage(QWidget):
             movie.start()
 
             cell_layout.addWidget(gif_label)
+
+            # Push button to the bottom regardless of GIF height
+            cell_layout.addStretch(1)
 
             # -------- Button -------- #
             btn = QPushButton(behavior["title"] + "\n" + behavior["description"])
@@ -253,7 +272,13 @@ class ExercisePage(QWidget):
 
         self.parent_ui.selected_exercise = display_title
 
-        # Show exercise overlay
+        # Find the matching exercise config entry for its GIF and why text
+        exercise = next((e for e in self.exercise_config if e["title"] == display_title), None)
+        video = exercise["video"] if exercise else None
+        why   = exercise["why"]   if exercise else ""
+
+        # Show exercise overlay with GIF and reason
+        self.parent_ui.exercise_overlay.set_exercise(display_title, video, why)
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.exercise_overlay)
 
         # Start behavior with callback
@@ -307,21 +332,63 @@ class ExercisePage(QWidget):
         event.accept()
 
 class ExerciseOverlay(QWidget):
+    """
+    Shown while SAMI performs an exercise.
+    Displays the exercise GIF, the exercise title, and a short
+    explanation of why the movement is beneficial.
+    Call set_exercise() before switching to this page.
+    """
+
     def __init__(self):
         super().__init__()
 
         layout = QVBoxLayout(self)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.setContentsMargins(40, 30, 40, 30)
+        layout.setSpacing(20)
 
-        label = QLabel("SAMI is moving...")
-        label.setStyleSheet("""
-            color: black;
-            font-size: 48px;
-            font-weight: bold;
-        """)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # -- Animated GIF — expands to fill available space --
+        self.gif_label = QLabel()
+        self.gif_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.gif_label.setSizePolicy(
+            self.gif_label.sizePolicy().horizontalPolicy(),
+            __import__('PyQt6.QtWidgets', fromlist=['QSizePolicy']).QSizePolicy.Policy.Expanding
+        )
+        layout.addWidget(self.gif_label, stretch=3)
 
-        layout.addWidget(label)
+        # -- "SAMI is performing: X" status line --
+        self.status_label = QLabel("SAMI is moving...")
+        self.status_label.setStyleSheet(
+            "color: black; font-size: 48px; font-weight: bold;"
+        )
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.status_label.setWordWrap(True)
+        layout.addWidget(self.status_label, stretch=1)
+
+        # -- Why this exercise --
+        self.why_label = QLabel()
+        self.why_label.setWordWrap(True)
+        self.why_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.why_label.setStyleSheet(
+            "color: #333; font-size: 28px; font-style: italic;"
+        )
+        layout.addWidget(self.why_label, stretch=1)
+
+        self._movie = None
+
+    def set_exercise(self, title: str, video_path: str | None, why: str):
+        """Update overlay content before it is shown."""
+        self.status_label.setText(f"SAMI is performing: {title}")
+
+        # -- Load and start the GIF --
+        if video_path:
+            self._movie = QMovie(video_path)
+            self.gif_label.setMovie(self._movie)
+            self._movie.start()
+            self.gif_label.setVisible(True)
+        else:
+            self.gif_label.setVisible(False)
+
+        self.why_label.setText(why)
 
 
 # ==============================================================================
@@ -426,7 +493,7 @@ class SensorDataPage(QWidget):
         layout.setSpacing(16)
 
         # -- Page title --
-        title = QLabel("Sensor Data")
+        title = QLabel("Sensor Demo")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
@@ -1208,93 +1275,87 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.trivia_csv = "trivia_questions.csv"
 
         self.initUI()
-        self.initialize_serial_connection()
+
+        if arduino_port:
+            try:
+                self.initialize_serial_connection()
+            except Exception as e:
+                print(f"Could not connect to Arduino: {e} — running in UI-only mode.")
 
     def delay(self, t):
         time.sleep(t)
 
-    # def initUI(self):
-    #     self.resize(600, 400)
-    #     layout = QVBoxLayout()
-    #     # Dropdown for selecting a joint by name
-    #     self.joint_name_dropdown = QComboBox(self)
-    #     self.joint_name_dropdown.addItems(list(self.joint_map.keys()))
-    #     layout.addWidget(self.joint_name_dropdown)
-    #     # Input for joint angle
-    #     self.angle_input = QLineEdit(self)
-    #     self.angle_input.setPlaceholderText("Enter Angle")
-    #     layout.addWidget(self.angle_input)
-    #     # Input for move time
-    #     self.time_input = QLineEdit(self)
-    #     self.time_input.setPlaceholderText("Enter Move Time")
-    #     layout.addWidget(self.time_input)
-    #     # Button to send a single joint command
-    #     send_button = QPushButton("Send Command", self)
-    #     send_button.clicked.connect(self.handle_send_command)
-    #     layout.addWidget(send_button)
-    #     # Button to move all joints to their home positions
-    #     home_button = QPushButton("Home", self)
-    #     home_button.clicked.connect(self.move_to_home)
-    #     layout.addWidget(home_button)
-    #     # Dropdown for available behavior JSON files
-    #     self.behavior_dropdown = QComboBox(self)
-    #     self.behavior_dropdown.addItems(self.get_behavior_files())
-    #     layout.addWidget(self.behavior_dropdown)
-    #     # Button to perform the selected behavior
-    #     behavior_button = QPushButton("Perform Behavior", self)
-    #     behavior_button.clicked.connect(self.perform_behavior)
-    #     layout.addWidget(behavior_button)
-    #     self.setLayout(layout)
-    #     self.setWindowTitle("SAMI Control")
-    #     self.show()
-
+    # ── UI entry point ─────────────────────────────────────────────────────────
     def initUI(self):
+        """Dispatch to the appropriate UI based on the USE_NEW_UI flag at the top of the file."""
+        if USE_NEW_UI:
+            self._initUI_new()
+        else:
+            self._initUI_legacy()
+
+    # ── New presentation UI ────────────────────────────────────────────────────
+    def _initUI_new(self):
+        """Full presentation UI: stacked pages, trivia, exercise overlay, data pages."""
         self.setWindowTitle("SAMI UI")
         self.resize(1920, 1080)
         self.setStyleSheet("background-color: #96C4DB;")
 
-        # Central stack
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)
 
-        # -------- HOME PAGE -------- #
-        self.home_page = HomePage(self)
-        self.stack.addWidget(self.home_page)
+        self.home_page          = HomePage(self);          self.stack.addWidget(self.home_page)
+        self.exercise_page      = ExercisePage(self);      self.stack.addWidget(self.exercise_page)
+        self.exercise_overlay   = ExerciseOverlay();       self.stack.addWidget(self.exercise_overlay)
+        self.data_page          = DataPage(self);          self.stack.addWidget(self.data_page)
+        self.sensor_data_page   = SensorDataPage(self);    self.stack.addWidget(self.sensor_data_page)
+        self.rating_data_page   = RatingDataPage(self);    self.stack.addWidget(self.rating_data_page)
+        self.rating_page        = RatingPage(self);        self.stack.addWidget(self.rating_page)
+        self.trivia_page        = TriviaPage(self);        self.stack.addWidget(self.trivia_page)
+        self.trivia_question_page = TriviaQuestionPage(self); self.stack.addWidget(self.trivia_question_page)
+        self.trivia_answer_page = TriviaAnswerPage(self);  self.stack.addWidget(self.trivia_answer_page)
+        self.trivia_score_page  = TriviaScorePage(self);   self.stack.addWidget(self.trivia_score_page)
 
-        # -------- EXERCISE PAGE -------- #
-        self.exercise_page = ExercisePage(self)
-        self.stack.addWidget(self.exercise_page)
+        self.stack.setCurrentWidget(self.home_page)
 
-        # -------- EXERCISE OVERLAY -------- #
-        self.exercise_overlay = ExerciseOverlay()
-        self.stack.addWidget(self.exercise_overlay)
+    # ── Legacy debug UI ────────────────────────────────────────────────────────
+    def _initUI_legacy(self):
+        """Original debug UI: joint dropdowns, angle inputs, raw command buttons."""
+        from PyQt6.QtWidgets import QLineEdit, QComboBox
 
-        # -------- SENSOR PAGE -------- #
-        # -------- DATA PAGE (hub) -------- #
-        self.data_page = DataPage(self)
-        self.stack.addWidget(self.data_page)
+        self.resize(600, 400)
+        self.setWindowTitle("SAMI Control")
 
-        # -------- SENSOR DATA PAGE -------- #
-        self.sensor_data_page = SensorDataPage(self)
-        self.stack.addWidget(self.sensor_data_page)
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        self.setCentralWidget(container)
 
-        # -------- RATING DATA PAGE -------- #
-        self.rating_data_page = RatingDataPage(self)
-        self.stack.addWidget(self.rating_data_page)
+        self.joint_name_dropdown = QComboBox(self)
+        self.joint_name_dropdown.addItems(list(self.full_joint_map.keys()))
+        layout.addWidget(self.joint_name_dropdown)
 
-        # -------- RATING PAGE -------- #
-        self.rating_page = RatingPage(self)
-        self.stack.addWidget(self.rating_page)
+        self.angle_input = QLineEdit(self)
+        self.angle_input.setPlaceholderText("Enter Angle")
+        layout.addWidget(self.angle_input)
 
-        # -------- TRIVIA PAGES -------- #
-        self.trivia_page = TriviaPage(self)
-        self.stack.addWidget(self.trivia_page)
-        self.trivia_question_page = TriviaQuestionPage(self)
-        self.stack.addWidget(self.trivia_question_page)
-        self.trivia_answer_page = TriviaAnswerPage(self)
-        self.stack.addWidget(self.trivia_answer_page)
-        self.trivia_score_page = TriviaScorePage(self)
-        self.stack.addWidget(self.trivia_score_page)
+        self.time_input = QLineEdit(self)
+        self.time_input.setPlaceholderText("Enter Move Time")
+        layout.addWidget(self.time_input)
+
+        send_button = QPushButton("Send Command", self)
+        send_button.clicked.connect(self.handle_send_command)
+        layout.addWidget(send_button)
+
+        home_button = QPushButton("Home", self)
+        home_button.clicked.connect(self.move_to_home)
+        layout.addWidget(home_button)
+
+        self.behavior_dropdown = QComboBox(self)
+        self.behavior_dropdown.addItems(self.get_behavior_files())
+        layout.addWidget(self.behavior_dropdown)
+
+        behavior_button = QPushButton("Perform Behavior", self)
+        behavior_button.clicked.connect(self.perform_behavior)
+        layout.addWidget(behavior_button)
 
 
     def load_behavior(self, behavior_file):
