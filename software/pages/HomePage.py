@@ -8,10 +8,13 @@
 # ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton,
+    QPushButton,
 )
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt
+
+# ── Project imports ───────────────────────────────────────────────────────────
+from components.page_title import PageTitle
+from components.icon_nav_button import IconNavButton
 
 
 # ==============================================================================
@@ -31,10 +34,7 @@ class HomePage(QWidget):
         layout.setSpacing(8)
 
         # ── Title ────────────────────────────────────────────────────────────
-        title = QLabel("Select an Interaction")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Select an Interaction"))
         layout.addStretch(1)
 
         # ── Interaction grid ─────────────────────────────────────────────────
@@ -49,24 +49,7 @@ class HomePage(QWidget):
         ]
 
         for col, (name, icon_path) in enumerate(interactions):
-            interaction_btn = QToolButton()
-            interaction_btn.setText(name)
-            interaction_btn.setIcon(QIcon(QPixmap(icon_path)))
-            interaction_btn.setIconSize(QSize(170, 170))
-            interaction_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-            interaction_btn.setMinimumSize(400, 400)
-
-            interaction_btn.setStyleSheet("""
-            QToolButton {
-                color: #000;
-                font-size: 48px;
-                font-weight: bold;
-                padding: 20px;
-                border-radius: 20px;
-                background: #FFCCCC;
-                border: 3px solid #333;
-            }
-            """)
+            interaction_btn = IconNavButton(name, icon_path)
 
             if name == "Exercises":
                 interaction_btn.clicked.connect(

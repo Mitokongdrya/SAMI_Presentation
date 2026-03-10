@@ -10,12 +10,13 @@ import os
 # ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QPushButton,
 )
 from PyQt6.QtCore import Qt
 
 # ── Project imports ───────────────────────────────────────────────────────────
-from components.home_button import HomeButton
+from components.page_title import PageTitle
+from components.action_button import ActionButton
+from components.back_home_nav import BackHomeNav
 
 
 # ==============================================================================
@@ -42,10 +43,7 @@ class SensorDataPage(QWidget):
         layout.setSpacing(16)
 
         # ── Page title ───────────────────────────────────────────────────────
-        title = QLabel("Sensor Demo")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Sensor Demo"))
 
         # ── Video widget ─────────────────────────────────────────────────────
         self.video_widget = QVideoWidget()
@@ -67,24 +65,11 @@ class SensorDataPage(QWidget):
         controls.setSpacing(24)
         controls.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        BTN = """
-            QPushButton {
-                font-size: 32px; font-weight: bold; color: black;
-                border-radius: 16px; background: #FFCCCC; border: 3px solid #333;
-                padding: 12px 40px;
-            }
-            QPushButton:hover { background: #FFB3B3; }
-        """
-
-        play_btn = QPushButton("\u25b6  Play / Pause")
-        play_btn.setStyleSheet(BTN)
-        play_btn.setMinimumHeight(80)
+        play_btn = ActionButton("\u25b6  Play / Pause", min_width=300, min_height=80)
         play_btn.clicked.connect(self._toggle_play)
         controls.addWidget(play_btn)
 
-        stop_btn = QPushButton("\u25a0  Stop")
-        stop_btn.setStyleSheet(BTN)
-        stop_btn.setMinimumHeight(80)
+        stop_btn = ActionButton("\u25a0  Stop", min_width=200, min_height=80)
         stop_btn.clicked.connect(self._stop)
         controls.addWidget(stop_btn)
 
@@ -92,20 +77,8 @@ class SensorDataPage(QWidget):
         layout.addStretch(1)
 
         # ── Back and Home buttons ────────────────────────────────────────────
-        nav_row = QHBoxLayout()
-
-        back_btn = HomeButton("\u2190 Back")
-        back_btn.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
-        )
-        nav_row.addWidget(back_btn)
-
-        home_button = HomeButton("Return Home")
-        home_button.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
-        )
-        nav_row.addWidget(home_button)
-        layout.addLayout(nav_row)
+        nav = BackHomeNav(parent_ui, back_page=parent_ui.data_page)
+        layout.addLayout(nav.layout)
 
     def _toggle_play(self):
         """Toggle between playing and paused."""

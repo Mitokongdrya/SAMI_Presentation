@@ -15,7 +15,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 # ── Project imports ───────────────────────────────────────────────────────────
-from components.home_button import HomeButton
+from components.page_title import PageTitle
+from components.back_home_nav import BackHomeNav
 
 
 # ==============================================================================
@@ -40,16 +41,10 @@ class RatingDataPage(QWidget):
         layout.setSpacing(16)
 
         # ── Page title ───────────────────────────────────────────────────────
-        title = QLabel("Rating Data")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Rating Data"))
 
         # ── Section heading ──────────────────────────────────────────────────
-        ratings_title = QLabel("Exercise Ratings")
-        ratings_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        ratings_title.setStyleSheet("font-size: 36px; font-weight: bold; color: #333;")
-        layout.addWidget(ratings_title)
+        layout.addWidget(PageTitle("Exercise Ratings", font_size=36))
 
         # ── Per-exercise average summary cards (populated dynamically) ───────
         self.summary_layout = QHBoxLayout()
@@ -84,20 +79,8 @@ class RatingDataPage(QWidget):
         layout.addWidget(self.table)
 
         # ── Back and Home buttons ────────────────────────────────────────────
-        nav_row = QHBoxLayout()
-
-        back_btn = HomeButton("\u2190 Back")
-        back_btn.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.data_page)
-        )
-        nav_row.addWidget(back_btn)
-
-        home_button = HomeButton("Return Home")
-        home_button.clicked.connect(
-            lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
-        )
-        nav_row.addWidget(home_button)
-        layout.addLayout(nav_row)
+        nav = BackHomeNav(parent_ui, back_page=parent_ui.data_page)
+        layout.addLayout(nav.layout)
 
     def showEvent(self, event):
         """Reload ratings from disk every time this page becomes visible."""

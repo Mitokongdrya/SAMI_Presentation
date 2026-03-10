@@ -15,61 +15,9 @@ from PyQt6.QtCore import Qt
 
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
-
-# ============================================================
-# TRIVIA HOME CONFIRMATION DIALOG
-# ============================================================
-
-class TriviaHomeConfirmDialog(QDialog):
-    """
-    Simple modal: asks the user to confirm before abandoning trivia.
-    Matches the existing #FFCCCC / border: 3px solid #333 aesthetic.
-    """
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Leave Trivia?")
-        self.setModal(True)
-        self.setMinimumWidth(600)
-        self.setStyleSheet("background-color: #96C4DB;")
-
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(56, 48, 56, 48)
-        layout.setSpacing(36)
-
-        msg = QLabel("⚠️  Your trivia progress will be lost.\nAre you sure you want to go home?")
-        msg.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        msg.setWordWrap(True)
-        msg.setStyleSheet("font-size: 28px; font-weight: bold; color: #333; background: transparent;")
-        layout.addWidget(msg)
-
-        btn_row = QHBoxLayout()
-        btn_row.setSpacing(32)
-
-        stay_btn   = QPushButton("Cancel — Stay Here")
-        go_btn     = QPushButton("Yes, Go Home")
-
-        for btn, is_confirm in [(stay_btn, False), (go_btn, True)]:
-            btn.setMinimumHeight(80)
-            btn.setStyleSheet(f"""
-                QPushButton {{
-                    font-size: 28px;
-                    font-weight: bold;
-                    color: black;
-                    border-radius: 16px;
-                    background: {'#ff6666' if is_confirm else '#FFCCCC'};
-                    border: 3px solid #333;
-                    padding: 12px 28px;
-                }}
-                QPushButton:hover {{
-                    background: {'#ff3333' if is_confirm else '#FFB3B3'};
-                }}
-            """)
-            btn_row.addWidget(btn)
-
-        stay_btn.clicked.connect(self.reject)
-        go_btn.clicked.connect(self.accept)
-        layout.addLayout(btn_row)
-
+from components.page_title import PageTitle
+from components.action_button import ActionButton
+from components.confirm_dialog import ConfirmDialog
 
 # ==============================================================================
 # Trivia Landing Page
@@ -88,10 +36,7 @@ class TriviaPage(QWidget):
         layout.setSpacing(8)
 
         # ── Title ────────────────────────────────────────────────────────────
-        title = QLabel("Trivia")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Trivia"))
         layout.addStretch(1)
 
         # ── Question count prompt ────────────────────────────────────────────
@@ -261,7 +206,10 @@ class TriviaQuestionPage(QWidget):
     # ── Navigation ───────────────────────────────────────────────────────────
     def _confirm_go_home(self, *_):
         """Show a confirmation dialog before abandoning the trivia game."""
-        dlg = TriviaHomeConfirmDialog(self)
+        dlg = ConfirmDialog(
+            message="⚠️  Your trivia progress will be lost.\nAre you sure you want to go home?",
+            parent=self,
+        )
         if dlg.exec() == QDialog.DialogCode.Accepted:
             self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
 
@@ -290,21 +238,10 @@ class TriviaQuestionPage(QWidget):
 
         for i, (letter, text) in enumerate(options):
             row, col = divmod(i, 2)
-            btn = QPushButton(f"{letter}.  {text}")
-            btn.setMinimumSize(600, 130)
-            btn.setStyleSheet("""
-                QPushButton {
-                    font-size: 28px;
-                    font-weight: bold;
-                    color: black;
-                    border-radius: 20px;
-                    background: #FFCCCC;
-                    border: 3px solid #333;
-                    text-align: left;
-                    padding-left: 24px;
-                }
-                QPushButton:hover { background: #FFB3B3; }
-            """)
+            btn = ActionButton(
+                f"{letter}.  {text}",
+                min_width=600, min_height=130, font_size=28, text_align="left",
+            )
             btn.clicked.connect(lambda _, l=letter: self._submit(l))
             self.answers_grid.addWidget(btn, row, col)
             self.answer_buttons.append(btn)
@@ -352,19 +289,7 @@ class TriviaAnswerPage(QWidget):
         layout.addStretch(1)
 
         # ── Next question button ─────────────────────────────────────────────
-        next_btn = QPushButton("Next Question")
-        next_btn.setMinimumSize(400, 120)
-        next_btn.setStyleSheet("""
-            QPushButton {
-                font-size: 40px;
-                font-weight: bold;
-                color: black;
-                border-radius: 20px;
-                background: #FFCCCC;
-                border: 3px solid #333;
-            }
-            QPushButton:hover { background: #FFB3B3; }
-        """)
+        next_btn = ActionButton("Next Question", min_width=400, min_height=120, font_size=40)
         next_btn.clicked.connect(self._next)
         layout.addWidget(next_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
@@ -378,7 +303,10 @@ class TriviaAnswerPage(QWidget):
     # ── Navigation ───────────────────────────────────────────────────────────
     def _confirm_go_home(self, *_):
         """Show a confirmation dialog before abandoning the trivia game."""
-        dlg = TriviaHomeConfirmDialog(self)
+        dlg = ConfirmDialog(
+            message="⚠️  Your trivia progress will be lost.\nAre you sure you want to go home?",
+            parent=self,
+        )
         if dlg.exec() == QDialog.DialogCode.Accepted:
             self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
 
@@ -450,27 +378,11 @@ class TriviaScorePage(QWidget):
         btn_row = QHBoxLayout()
         btn_row.setSpacing(40)
 
-        play_again_btn = QPushButton("Play Again")
-        play_again_btn.setMinimumSize(360, 120)
-        play_again_btn.setStyleSheet("""
-            QPushButton {
-                font-size: 40px; font-weight: bold; color: black;
-                border-radius: 20px; background: #FFCCCC; border: 3px solid #333;
-            }
-            QPushButton:hover { background: #FFB3B3; }
-        """)
+        play_again_btn = ActionButton("Play Again", min_width=360, min_height=120, font_size=40)
         play_again_btn.clicked.connect(self._play_again)
         btn_row.addWidget(play_again_btn)
 
-        home_btn = QPushButton("Go Home")
-        home_btn.setMinimumSize(360, 120)
-        home_btn.setStyleSheet("""
-            QPushButton {
-                font-size: 40px; font-weight: bold; color: black;
-                border-radius: 20px; background: #FFCCCC; border: 3px solid #333;
-            }
-            QPushButton:hover { background: #FFB3B3; }
-        """)
+        home_btn = ActionButton("Go Home", min_width=360, min_height=120, font_size=40)
         home_btn.clicked.connect(
             lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
         )

@@ -17,6 +17,8 @@ from PyQt6.QtCore import Qt, QTimer
 
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
+from components.page_title import PageTitle
+from components.action_button import ActionButton
 
 
 # ==============================================================================
@@ -36,10 +38,7 @@ class ExercisePage(QWidget):
         layout.setSpacing(8)
 
         # ── Title ────────────────────────────────────────────────────────────
-        title = QLabel("Select an Exercise to Perform")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Select an Exercise to Perform"))
         layout.addStretch(1)
 
         # ── Exercise grid ────────────────────────────────────────────────────
@@ -80,21 +79,10 @@ class ExercisePage(QWidget):
             cell_layout.addStretch(1)
 
             # ── Exercise button ──────────────────────────────────────────
-            btn = QPushButton(behavior["title"] + "\n" + behavior["description"])
-            btn.setMinimumSize(400, 200)
-            btn.setStyleSheet("""
-            QPushButton {
-                font-size: 32px;
-                font-weight: bold;
-                color: black;
-                border-radius: 20px;
-                background: #FFCCCC;
-                border: 3px solid #333;
-            }
-            QPushButton:hover {
-                background: #FFB3B3;
-            }
-            """)
+            btn = ActionButton(
+                behavior["title"] + "\n" + behavior["description"],
+                min_width=400, min_height=200,
+            )
 
             btn.clicked.connect(
                 lambda _, f=behavior["file"], t=behavior["title"]:

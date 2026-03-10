@@ -8,7 +8,7 @@
 # ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QToolButton, QButtonGroup,
+    QToolButton, QButtonGroup,
 )
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt, QSize
@@ -16,6 +16,7 @@ from PyQt6.QtCore import Qt, QSize
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
 from components.button import Button
+from components.page_title import PageTitle
 
 
 # ==============================================================================
@@ -33,10 +34,7 @@ class RatingPage(QWidget):
         layout = QVBoxLayout(self)
 
         # ── Title ────────────────────────────────────────────────────────────
-        title = QLabel("Rate this Exercise")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Rate this Exercise"))
         layout.addStretch(1)
 
         # ── Rating buttons row ───────────────────────────────────────────────

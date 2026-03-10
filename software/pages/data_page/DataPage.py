@@ -8,13 +8,12 @@
 # ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QGridLayout,
-    QLabel, QToolButton,
 )
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import Qt, QSize
 
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
+from components.page_title import PageTitle
+from components.icon_nav_button import IconNavButton
 
 
 # ==============================================================================
@@ -37,10 +36,7 @@ class DataPage(QWidget):
         layout.setSpacing(8)
 
         # ── Page title ───────────────────────────────────────────────────────
-        title = QLabel("Data")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Data"))
         layout.addStretch(1)
 
         # ── Navigation button grid ───────────────────────────────────────────
@@ -54,24 +50,7 @@ class DataPage(QWidget):
         ]
 
         for col, (name, icon_path) in enumerate(sections):
-            btn = QToolButton()
-            btn.setText(name)
-            btn.setIcon(QIcon(QPixmap(icon_path)))
-            btn.setIconSize(QSize(170, 170))
-            btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-            btn.setMinimumSize(400, 400)
-            btn.setStyleSheet("""
-                QToolButton {
-                    color: #000;
-                    font-size: 48px;
-                    font-weight: bold;
-                    padding: 20px;
-                    border-radius: 20px;
-                    background: #FFCCCC;
-                    border: 3px solid #333;
-                }
-                QToolButton:hover { background: #FFB3B3; }
-            """)
+            btn = IconNavButton(name, icon_path)
 
             if name == "Sensor Demo":
                 btn.clicked.connect(

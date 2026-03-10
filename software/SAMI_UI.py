@@ -18,17 +18,18 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QStackedWidget, QWidget,
-    QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton, QButtonGroup,
-    QDialog
+    QVBoxLayout, QGridLayout,
+    QLabel, QPushButton,
 )
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize, QTimer
+from PyQt6.QtGui import QMovie
+from PyQt6.QtCore import Qt, QTimer
 
 # ── Project imports ───────────────────────────────────────────────────────────
 from SAMIControl import SAMIControl
 from components.home_button import HomeButton
 from components.button import Button
+from components.page_title import PageTitle
+from components.action_button import ActionButton
 from pages.HomePage import HomePage
 from pages.RatingPage import RatingPage
 from pages.TriviaPage import TriviaPage, TriviaQuestionPage, TriviaAnswerPage, TriviaScorePage
@@ -60,10 +61,7 @@ class ExercisePage(QWidget):
         layout.setSpacing(8)
 
         # ── Title ────────────────────────────────────────────────────────────
-        title = QLabel("Select an Exercise to Perform")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
-        layout.addWidget(title)
+        layout.addWidget(PageTitle("Select an Exercise to Perform"))
         layout.addStretch(1)
 
         # ── Exercise grid ────────────────────────────────────────────────────
@@ -104,21 +102,10 @@ class ExercisePage(QWidget):
             cell_layout.addStretch(1)
 
             # ── Exercise button ──────────────────────────────────────────
-            btn = QPushButton(behavior["title"] + "\n" + behavior["description"])
-            btn.setMinimumSize(400, 200)
-            btn.setStyleSheet("""
-            QPushButton {
-                font-size: 32px;
-                font-weight: bold;
-                color: black;
-                border-radius: 20px;
-                background: #FFCCCC;
-                border: 3px solid #333;
-            }
-            QPushButton:hover {
-                background: #FFB3B3;
-            }
-            """)
+            btn = ActionButton(
+                behavior["title"] + "\n" + behavior["description"],
+                min_width=400, min_height=200, font_size=32,
+            )
 
             btn.clicked.connect(
                 lambda _, f=behavior["file"], t=behavior["title"]:
