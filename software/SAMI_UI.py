@@ -365,7 +365,7 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.trivia_index = 0
         self.trivia_score = 0
         self.trivia_last_correct = False
-        self.trivia_csv = "trivia_questions.csv"
+        self.trivia_csv = "showcase_trivia.csv"
 
         self.initUI()
 
