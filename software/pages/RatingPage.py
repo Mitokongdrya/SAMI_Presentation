@@ -1,16 +1,30 @@
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QStackedWidget, QWidget,
-    QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton, QButtonGroup,
-    QDialog
-)
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize, QTimer
+# ==============================================================================
+# RatingPage.py — Post-exercise rating page.
+#
+# Presents a 1–5 rating scale with emoji icons so the user can rate
+# the exercise they just completed. Also offers a "Prefer Not To Rate" option.
+# ==============================================================================
 
+# ── PyQt6 imports ─────────────────────────────────────────────────────────────
+from PyQt6.QtWidgets import (
+    QWidget, QVBoxLayout, QHBoxLayout,
+    QLabel, QToolButton, QButtonGroup,
+)
+from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import Qt, QSize
+
+# ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
 from components.button import Button
 
+
+# ==============================================================================
+# Rating Page
+# ==============================================================================
+
 class RatingPage(QWidget):
+    """Post-exercise rating page — 1-to-5 scale with emoji icons."""
+
     def __init__(self, parent_ui):
         super().__init__()
 
@@ -18,12 +32,14 @@ class RatingPage(QWidget):
 
         layout = QVBoxLayout(self)
 
+        # ── Title ────────────────────────────────────────────────────────────
         title = QLabel("Rate this Exercise")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
         layout.addStretch(1)
 
+        # ── Rating buttons row ───────────────────────────────────────────────
         row = QHBoxLayout()
         row.setSpacing(40)
         layout.addLayout(row)
@@ -65,13 +81,14 @@ class RatingPage(QWidget):
             self.group.addButton(rating_btn)
             row.addWidget(rating_btn)
 
+        # ── "Prefer Not To Rate" option ──────────────────────────────────────
         self.no_rate_btn = Button("Prefer Not To Rate", 300, 80, "#E6EEF3")
         layout.addWidget(self.no_rate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
         self.no_rate_btn.clicked.connect(lambda: self.parent_ui.submit_rating("None"))
 
         layout.addStretch(1)
 
-        # Add a button to return home
+        # ── Home button ──────────────────────────────────────────────────────
         home_button = HomeButton("Return Home")
         layout.addWidget(home_button)
 

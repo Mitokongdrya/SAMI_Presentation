@@ -1,15 +1,21 @@
-# PyQt6 — widgets, gui helpers, and core utilities
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QStackedWidget, QWidget,
-    QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton, QButtonGroup,
-    QDialog
-)
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize, QTimer
+# ==============================================================================
+# DataPage.py — Data hub page for the SAMI UI.
+#
+# Presents two navigation buttons: Sensor Demo and Rating Data,
+# linking to their respective sub-pages.
+# ==============================================================================
 
+# ── PyQt6 imports ─────────────────────────────────────────────────────────────
+from PyQt6.QtWidgets import (
+    QWidget, QVBoxLayout, QGridLayout,
+    QLabel, QToolButton,
+)
+from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import Qt, QSize
+
+# ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
-from components.button import Button
+
 
 # ==============================================================================
 # Data Page (hub)
@@ -30,14 +36,14 @@ class DataPage(QWidget):
         layout.setContentsMargins(10, 0, 10, 10)
         layout.setSpacing(8)
 
-        # -- Page title --
+        # ── Page title ───────────────────────────────────────────────────────
         title = QLabel("Data")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
         layout.addStretch(1)
 
-        # -- Navigation button grid --
+        # ── Navigation button grid ───────────────────────────────────────────
         grid = QGridLayout()
         grid.setHorizontalSpacing(40)
         grid.setVerticalSpacing(40)
@@ -81,7 +87,7 @@ class DataPage(QWidget):
         layout.addLayout(grid)
         layout.addStretch(1)
 
-        # -- Home button --
+        # ── Home button ──────────────────────────────────────────────────────
         home_button = HomeButton("Return Home")
         home_button.clicked.connect(
             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)

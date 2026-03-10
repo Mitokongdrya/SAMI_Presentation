@@ -1,17 +1,22 @@
+# ==============================================================================
+# RatingDataPage.py — Exercise rating history viewer.
+#
+# Displays per-exercise average summary cards and a full scrollable ratings
+# table. Reloads from disk every time the page is shown.
+# ==============================================================================
+
 import os
 
-# PyQt6 — widgets, gui helpers, and core utilities
+# ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QStackedWidget, QWidget,
-    QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton, QButtonGroup,
-    QDialog
+    QWidget, QVBoxLayout, QHBoxLayout,
+    QLabel,
 )
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize, QTimer
+from PyQt6.QtCore import Qt
 
+# ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
-from components.button import Button
+
 
 # ==============================================================================
 # Rating Data Page
@@ -34,24 +39,24 @@ class RatingDataPage(QWidget):
         layout.setContentsMargins(40, 20, 40, 20)
         layout.setSpacing(16)
 
-        # -- Page title --
+        # ── Page title ───────────────────────────────────────────────────────
         title = QLabel("Rating Data")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
 
-        # -- Section heading --
+        # ── Section heading ──────────────────────────────────────────────────
         ratings_title = QLabel("Exercise Ratings")
         ratings_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         ratings_title.setStyleSheet("font-size: 36px; font-weight: bold; color: #333;")
         layout.addWidget(ratings_title)
 
-        # -- Per-exercise average summary cards (populated dynamically) --
+        # ── Per-exercise average summary cards (populated dynamically) ───────
         self.summary_layout = QHBoxLayout()
         self.summary_layout.setSpacing(20)
         layout.addLayout(self.summary_layout)
 
-        # -- Full ratings table --
+        # ── Full ratings table ───────────────────────────────────────────────
         from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
         self.table = QTableWidget()
         self.table.setColumnCount(3)
@@ -78,7 +83,7 @@ class RatingDataPage(QWidget):
         self.table.setMinimumHeight(400)
         layout.addWidget(self.table)
 
-        # -- Back and Home buttons --
+        # ── Back and Home buttons ────────────────────────────────────────────
         nav_row = QHBoxLayout()
 
         back_btn = HomeButton("\u2190 Back")
@@ -107,7 +112,7 @@ class RatingDataPage(QWidget):
         from PyQt6.QtWidgets import QTableWidgetItem
         from collections import defaultdict
 
-        # -- Parse the ratings file --
+        # ── Parse the ratings file ────────────────────────────────────────────
         rows = []
         if os.path.exists(self.rating_file):
             with open(self.rating_file, "r") as f:
@@ -116,7 +121,7 @@ class RatingDataPage(QWidget):
                     if len(parts) == 3:
                         rows.append(parts)
 
-        # -- Populate the table, most-recent entry first --
+        # ── Populate the table, most-recent entry first ──────────────────────
         self.table.setRowCount(len(rows))
         for r, (ts, exercise, rating) in enumerate(reversed(rows)):
             self.table.setItem(r, 0, QTableWidgetItem(ts))
@@ -127,7 +132,7 @@ class RatingDataPage(QWidget):
         if self.table.rowCount() > 0:
             self.table.setRowHeight(0, 48)
 
-        # -- Compute per-exercise averages (ignoring "None" entries) --
+        # ── Compute per-exercise averages (ignoring "None" entries) ──────────
         totals: dict = defaultdict(list)
         for _, exercise, rating in rows:
             if rating != "None":
@@ -136,7 +141,7 @@ class RatingDataPage(QWidget):
                 except ValueError:
                     pass
 
-        # -- Rebuild summary cards, clearing any previous ones first --
+        # ── Rebuild summary cards, clearing any previous ones first ──────────
         while self.summary_layout.count():
             item = self.summary_layout.takeAt(0)
             if item.widget():

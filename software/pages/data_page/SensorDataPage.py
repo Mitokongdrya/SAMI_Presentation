@@ -1,17 +1,22 @@
+# ==============================================================================
+# SensorDataPage.py — Sensor demo video player page.
+#
+# Displays a playable video (capstone-proof.mp4) using Qt's multimedia stack.
+# Provides Play/Pause and Stop controls beneath the video.
+# ==============================================================================
+
 import os
 
-# PyQt6 — widgets, gui helpers, and core utilities
+# ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QStackedWidget, QWidget,
-    QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton, QButtonGroup,
-    QDialog
-) 
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize, QTimer
+    QWidget, QVBoxLayout, QHBoxLayout,
+    QLabel, QPushButton,
+)
+from PyQt6.QtCore import Qt
 
+# ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
-from components.button import Button
+
 
 # ==============================================================================
 # Sensor Data Page
@@ -36,19 +41,19 @@ class SensorDataPage(QWidget):
         layout.setContentsMargins(40, 20, 40, 20)
         layout.setSpacing(16)
 
-        # -- Page title --
+        # ── Page title ───────────────────────────────────────────────────────
         title = QLabel("Sensor Demo")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
 
-        # -- Video widget --
+        # ── Video widget ─────────────────────────────────────────────────────
         self.video_widget = QVideoWidget()
         self.video_widget.setMinimumHeight(480)
         self.video_widget.setStyleSheet("background: #000; border-radius: 12px;")
         layout.addWidget(self.video_widget)
 
-        # -- Media player wired to the video widget --
+        # ── Media player wired to the video widget ───────────────────────────
         self.player = QMediaPlayer()
         self.audio_output = QAudioOutput()
         self.player.setAudioOutput(self.audio_output)
@@ -57,7 +62,7 @@ class SensorDataPage(QWidget):
             os.path.abspath("icons/capstone-proof.mp4")
         ))
 
-        # -- Playback controls --
+        # ── Playback controls ────────────────────────────────────────────────
         controls = QHBoxLayout()
         controls.setSpacing(24)
         controls.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -86,7 +91,7 @@ class SensorDataPage(QWidget):
         layout.addLayout(controls)
         layout.addStretch(1)
 
-        # -- Back and Home buttons --
+        # ── Back and Home buttons ────────────────────────────────────────────
         nav_row = QHBoxLayout()
 
         back_btn = HomeButton("\u2190 Back")

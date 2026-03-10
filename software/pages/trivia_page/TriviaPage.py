@@ -1,19 +1,13 @@
-# ==============================================================================
-# TriviaPage.py — Trivia game pages for the SAMI UI.
-#
-# Contains the trivia landing page (question count selection), the question
-# page, the answer feedback page, the final score page, and the confirmation
-# dialog shown when the user tries to leave mid-game.
-# ==============================================================================
-
-# ── PyQt6 imports ─────────────────────────────────────────────────────────────
+# PyQt6 — widgets, gui helpers, and core utilities
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QDialog,
+    QApplication, QMainWindow, QStackedWidget, QWidget,
+    QVBoxLayout, QHBoxLayout, QGridLayout,
+    QLabel, QPushButton, QToolButton, QButtonGroup,
+    QDialog
 )
-from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon, QPixmap, QMovie
+from PyQt6.QtCore import Qt, QSize, QTimer
 
-# ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
 
 # ============================================================
@@ -70,31 +64,28 @@ class TriviaHomeConfirmDialog(QDialog):
         go_btn.clicked.connect(self.accept)
         layout.addLayout(btn_row)
 
-
-# ==============================================================================
-# Trivia Landing Page
-# ==============================================================================
+# ============================================================
+# TRIVIA PAGES
+# ============================================================
 
 class TriviaPage(QWidget):
     """Landing page — choose 5 or 10 questions, then start."""
-
     def __init__(self, parent_ui):
         super().__init__()
         self.parent_ui = parent_ui
-        self._selected_count = None
+        self._selected_count = None  # will be 5 or 10
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 0, 10, 10)
         layout.setSpacing(8)
 
-        # ── Title ────────────────────────────────────────────────────────────
         title = QLabel("Trivia")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
         layout.addStretch(1)
 
-        # ── Question count prompt ────────────────────────────────────────────
+        # "How many questions?" label
         choose_label = QLabel("How many questions?")
         choose_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         choose_label.setStyleSheet("font-size: 40px; font-weight: bold; color: #333;")
@@ -102,7 +93,7 @@ class TriviaPage(QWidget):
 
         layout.addSpacing(16)
 
-        # ── 5 / 10 selector row ─────────────────────────────────────────────
+        # 5 / 10 selector row
         BTN_STYLE = """
             QPushButton {{
                 font-size: 48px;
@@ -148,7 +139,7 @@ class TriviaPage(QWidget):
         layout.addLayout(count_row)
         layout.addSpacing(32)
 
-        # ── Start button (disabled until a count is chosen) ──────────────────
+        # Start button — disabled until a count is chosen
         self._start_btn = QPushButton("Start Trivia")
         self._start_btn.setMinimumSize(400, 140)
         self._start_btn.setEnabled(False)
@@ -167,14 +158,12 @@ class TriviaPage(QWidget):
 
         layout.addStretch(1)
 
-        # ── Home button ──────────────────────────────────────────────────────
         home_button = HomeButton("Return Home")
         home_button.clicked.connect(
             lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
         )
         layout.addWidget(home_button)
 
-    # ── Events ───────────────────────────────────────────────────────────────
     def showEvent(self, event):
         """Reset selection every time the page is shown."""
         super().showEvent(event)
@@ -197,19 +186,12 @@ class TriviaPage(QWidget):
         """)
 
     def _start_trivia(self):
-        """Load questions and navigate to the first question page."""
         self.parent_ui.trivia_load_questions(limit=self._selected_count)
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_question_page)
         self.parent_ui.trivia_question_page.load_question()
 
-
-# ==============================================================================
-# Trivia Question Page
-# ==============================================================================
-
 class TriviaQuestionPage(QWidget):
     """Shows the current question and four answer buttons."""
-
     def __init__(self, parent_ui):
         super().__init__()
         self.parent_ui = parent_ui
@@ -218,7 +200,7 @@ class TriviaQuestionPage(QWidget):
         layout.setContentsMargins(10, 0, 10, 10)
         layout.setSpacing(8)
 
-        # ── Counter + score row ──────────────────────────────────────────────
+        # Counter + score row
         info_row = QHBoxLayout()
         self.counter_label = QLabel("Question 1 / ?")
         self.counter_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #333;")
@@ -229,7 +211,6 @@ class TriviaQuestionPage(QWidget):
         info_row.addWidget(self.score_label)
         layout.addLayout(info_row)
 
-        # ── Question text ────────────────────────────────────────────────────
         self.question_label = QLabel()
         self.question_label.setWordWrap(True)
         self.question_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -245,7 +226,6 @@ class TriviaQuestionPage(QWidget):
         layout.addWidget(self.question_label)
         layout.addStretch(1)
 
-        # ── Answer buttons grid ──────────────────────────────────────────────
         self.answers_grid = QGridLayout()
         self.answers_grid.setSpacing(24)
         layout.addLayout(self.answers_grid)
@@ -253,20 +233,16 @@ class TriviaQuestionPage(QWidget):
 
         layout.addStretch(1)
 
-        # ── Home button ──────────────────────────────────────────────────────
         home_button = HomeButton("Return Home")
         home_button.clicked.connect(self._confirm_go_home)
         layout.addWidget(home_button)
 
-    # ── Navigation ───────────────────────────────────────────────────────────
     def _confirm_go_home(self, *_):
-        """Show a confirmation dialog before abandoning the trivia game."""
         dlg = TriviaHomeConfirmDialog(self)
         if dlg.exec() == QDialog.DialogCode.Accepted:
             self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
 
     def load_question(self):
-        """Populate the page with the current question and answer choices."""
         q = self.parent_ui.trivia_current_question()
         if not q:
             return
@@ -310,19 +286,13 @@ class TriviaQuestionPage(QWidget):
             self.answer_buttons.append(btn)
 
     def _submit(self, letter):
-        """Submit the chosen answer and navigate to the feedback page."""
         self.parent_ui.trivia_submit_answer(letter)
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_answer_page)
         self.parent_ui.trivia_answer_page.refresh()
 
 
-# ==============================================================================
-# Trivia Answer Feedback Page
-# ==============================================================================
-
 class TriviaAnswerPage(QWidget):
     """Shows correct/wrong feedback and a Next button."""
-
     def __init__(self, parent_ui):
         super().__init__()
         self.parent_ui = parent_ui
@@ -333,7 +303,6 @@ class TriviaAnswerPage(QWidget):
 
         layout.addStretch(1)
 
-        # ── Result labels ────────────────────────────────────────────────────
         self.result_label = QLabel()
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.result_label.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
@@ -351,7 +320,6 @@ class TriviaAnswerPage(QWidget):
 
         layout.addStretch(1)
 
-        # ── Next question button ─────────────────────────────────────────────
         next_btn = QPushButton("Next Question")
         next_btn.setMinimumSize(400, 120)
         next_btn.setStyleSheet("""
@@ -370,20 +338,16 @@ class TriviaAnswerPage(QWidget):
 
         layout.addStretch(1)
 
-        # ── Home button ──────────────────────────────────────────────────────
         home_button = HomeButton("Return Home")
         home_button.clicked.connect(self._confirm_go_home)
         layout.addWidget(home_button)
 
-    # ── Navigation ───────────────────────────────────────────────────────────
     def _confirm_go_home(self, *_):
-        """Show a confirmation dialog before abandoning the trivia game."""
         dlg = TriviaHomeConfirmDialog(self)
         if dlg.exec() == QDialog.DialogCode.Accepted:
             self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
 
     def refresh(self):
-        """Update the page with the result of the last answered question."""
         was_correct = self.parent_ui.trivia_last_correct
         q = self.parent_ui.trivia_current_question(offset=-1)
         correct_text = q["correct_answer"] if q else ""
@@ -402,7 +366,6 @@ class TriviaAnswerPage(QWidget):
         )
 
     def _next(self):
-        """Advance to the next question or show the final score."""
         if self.parent_ui.trivia_index >= len(self.parent_ui.trivia_questions):
             self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_score_page)
             self.parent_ui.trivia_score_page.refresh()
@@ -411,13 +374,8 @@ class TriviaAnswerPage(QWidget):
             self.parent_ui.trivia_question_page.load_question()
 
 
-# ==============================================================================
-# Trivia Score Page
-# ==============================================================================
-
 class TriviaScorePage(QWidget):
     """Final score screen with Play Again and Go Home options."""
-
     def __init__(self, parent_ui):
         super().__init__()
         self.parent_ui = parent_ui
@@ -428,7 +386,6 @@ class TriviaScorePage(QWidget):
 
         layout.addStretch(2)
 
-        # ── Trophy and score labels ──────────────────────────────────────────
         trophy = QLabel("🏆")
         trophy.setAlignment(Qt.AlignmentFlag.AlignCenter)
         trophy.setStyleSheet("font-size: 100px;")
@@ -446,7 +403,6 @@ class TriviaScorePage(QWidget):
 
         layout.addStretch(1)
 
-        # ── Play Again / Go Home buttons ─────────────────────────────────────
         btn_row = QHBoxLayout()
         btn_row.setSpacing(40)
 
@@ -476,11 +432,10 @@ class TriviaScorePage(QWidget):
         )
         btn_row.addWidget(home_btn)
 
-        layout.addLayout(btn_row)
+        layout.addLayout(btn_row, )
         layout.addStretch(2)
 
     def refresh(self):
-        """Compute and display the final score with a congratulatory message."""
         total = len(self.parent_ui.trivia_questions)
         score = self.parent_ui.trivia_score
         self.score_label.setText(f"Final Score:  {score} / {total}")
@@ -496,7 +451,6 @@ class TriviaScorePage(QWidget):
         self.msg_label.setText(msg)
 
     def _play_again(self):
-        """Reload questions and restart the trivia game."""
         self.parent_ui.trivia_load_questions(limit=self.parent_ui.trivia_index)
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_question_page)
         self.parent_ui.trivia_question_page.load_question()

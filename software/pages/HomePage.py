@@ -1,30 +1,43 @@
+# ==============================================================================
+# HomePage.py — Main landing page for the SAMI UI.
+#
+# Presents interaction buttons (Exercises, Trivia, Data) that navigate
+# to their respective pages via the parent's QStackedWidget.
+# ==============================================================================
+
+# ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QStackedWidget, QWidget,
-    QVBoxLayout, QHBoxLayout, QGridLayout,
-    QLabel, QPushButton, QToolButton, QButtonGroup,
-    QDialog
+    QWidget, QVBoxLayout, QGridLayout,
+    QLabel, QPushButton, QToolButton,
 )
-from PyQt6.QtGui import QIcon, QPixmap, QMovie
-from PyQt6.QtCore import Qt, QSize, QTimer
+from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import Qt, QSize
+
+
+# ==============================================================================
+# Home Page
+# ==============================================================================
 
 class HomePage(QWidget):
+    """Main landing page — presents interaction buttons."""
+
     def __init__(self, parent_ui):
         super().__init__()
 
-        self.parent_ui = parent_ui  # reference to main window
+        self.parent_ui = parent_ui
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 0, 10, 10)
         layout.setSpacing(8)
 
-        # Title
+        # ── Title ────────────────────────────────────────────────────────────
         title = QLabel("Select an Interaction")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
         layout.addStretch(1)
 
-        # Grid
+        # ── Interaction grid ─────────────────────────────────────────────────
         grid = QGridLayout()
         grid.setHorizontalSpacing(40)
         grid.setVerticalSpacing(40)

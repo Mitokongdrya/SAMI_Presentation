@@ -1,3 +1,11 @@
+# ==============================================================================
+# SAMI_UI.py — Main UI entry point for the SAMI robot control interface.
+#
+# Defines the ExercisePage, ExerciseOverlay, and the main SAMIControlUI window
+# that ties all pages together with a QStackedWidget. Supports both a full
+# presentation UI and a legacy debug UI via the USE_NEW_UI flag.
+# ==============================================================================
+
 import sys
 import time
 import os
@@ -7,7 +15,7 @@ import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# PyQt6 — widgets, gui helpers, and core utilities
+# ── PyQt6 imports ─────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QStackedWidget, QWidget,
     QVBoxLayout, QHBoxLayout, QGridLayout,
@@ -17,7 +25,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QIcon, QPixmap, QMovie
 from PyQt6.QtCore import Qt, QSize, QTimer
 
-# Project modules
+# ── Project imports ───────────────────────────────────────────────────────────
 from SAMIControl import SAMIControl
 from components.home_button import HomeButton
 from components.button import Button
@@ -28,11 +36,10 @@ from pages.data_page.DataPage import DataPage
 from pages.data_page.SensorDataPage import SensorDataPage
 from pages.data_page.RatingDataPage import RatingDataPage
 
-# ── UI MODE ────────────────────────────────────────────────────────────────────
+# ── UI mode toggle ───────────────────────────────────────────────────────────
 # Set to True  → full presentation UI  (pages, stack, trivia, etc.)
 # Set to False → legacy debug UI       (joint dropdowns, raw commands)
 USE_NEW_UI = True
-# ──────────────────────────────────────────────────────────────────────────────
 
 
 
@@ -115,10 +122,13 @@ USE_NEW_UI = True
 #         # layout.addWidget(home_robot_btn)
 
 
-
-
+# ==============================================================================
+# Exercise Page
+# ==============================================================================
 
 class ExercisePage(QWidget):
+    """Displays available exercises as GIF previews with action buttons."""
+
     def __init__(self, parent_ui):
         super().__init__()
 
@@ -128,20 +138,19 @@ class ExercisePage(QWidget):
         layout.setContentsMargins(10, 0, 10, 10)
         layout.setSpacing(8)
 
-        # -------- Title -------- #
+        # ── Title ────────────────────────────────────────────────────────────
         title = QLabel("Select an Exercise to Perform")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
         layout.addWidget(title)
         layout.addStretch(1)
 
-        # -------- Grid -------- #
+        # ── Exercise grid ────────────────────────────────────────────────────
         grid = QGridLayout()
         grid.setSpacing(40)
         layout.addLayout(grid)
 
-
-        # Get first 6 behavior files dynamically
+        # ── Exercise configuration ───────────────────────────────────────────
         # behaviors = self.parent_ui.get_behavior_files()
         self.exercise_config = [
             {"title": "Wave", "description": "Wave hello to the adoring fans", "file": "Wave.json", "video": "icons/Waving.gif",
@@ -152,19 +161,17 @@ class ExercisePage(QWidget):
              "why": "Side-to-side stretching improves spinal flexibility, activates the obliques, and enhances balance."},
         ]
 
-        # single row with 3 columns (show first 3 exercises)
+        # ── Build exercise grid cells ────────────────────────────────────────
         positions = [(0, c) for c in range(3)]
 
-        # single row with 3 columns (show first 3 exercises)
         for (row, col), behavior in zip(positions, self.exercise_config[:3]):
 
-            # Create container widget for this grid cell
+            # ── Cell container ────────────────────────────────────────────
             cell_widget = QWidget()
             cell_layout = QVBoxLayout(cell_widget)
             cell_layout.setSpacing(10)
-            # No AlignCenter — stretch between GIF and button pins all buttons to the same bottom edge
 
-            # -------- GIF -------- #
+            # ── GIF preview ──────────────────────────────────────────────
             gif_label = QLabel()
             gif_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -173,11 +180,9 @@ class ExercisePage(QWidget):
             movie.start()
 
             cell_layout.addWidget(gif_label)
-
-            # Push button to the bottom regardless of GIF height
             cell_layout.addStretch(1)
 
-            # -------- Button -------- #
+            # ── Exercise button ──────────────────────────────────────────
             btn = QPushButton(behavior["title"] + "\n" + behavior["description"])
             btn.setMinimumSize(400, 200)
             btn.setStyleSheet("""
@@ -201,30 +206,26 @@ class ExercisePage(QWidget):
 
             cell_layout.addWidget(btn)
 
-            # Add the whole vertical layout widget into the grid
             grid.addWidget(cell_widget, row, col)
 
-
-        # Add a stretchable space at the bottom
         layout.addStretch(1)
 
-
-        # Add a button to return home
+        # ── Home button ──────────────────────────────────────────────────────
         home_button = HomeButton("Return Home")
         layout.addWidget(home_button)
-
    
         home_button.clicked.connect(lambda _: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page))
         layout.addWidget(home_button)
 
-    # -------- Load Behavior Files -------- #
+    # ── Load behavior files ──────────────────────────────────────────────────
     # def get_first_six_behaviors(self):
     #     folder = self.parent_ui.behavior_folder
     #     files = [f.replace(".json", "") for f in os.listdir(folder) if f.endswith(".json")]
     #     return files[:6]
 
-    # -------- Start Behavior -------- #
+    # ── Start behavior ───────────────────────────────────────────────────────
     def start_exercise(self, name):
+        """Queue an exercise behavior and return home after a delay."""
         print(f"Starting behavior: {name}")
 
         # Start behavior from main UI
@@ -235,16 +236,19 @@ class ExercisePage(QWidget):
         self.return_home_after_delay(3000)
 
     def return_home_after_delay(self, delay_ms):
+        """Schedule a return to the home page after *delay_ms* milliseconds."""
         QTimer.singleShot(delay_ms, self.go_home)
 
     # def go_home(self):
     #     self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)  # assuming home is a widget
 
     def load_behavior(self, behavior_file):
-            with open(behavior_file, 'r') as file:
-                return json.load(file)['Keyframes']
+        """Load keyframes from a behavior JSON file."""
+        with open(behavior_file, 'r') as file:
+            return json.load(file)['Keyframes']
 
     def handle_send_command(self):
+        """Parse angle/time inputs and send a single joint command."""
         joint_name = self.joint_name_dropdown.currentText()
         try:
             angle = int(self.angle_input.text())
@@ -256,6 +260,7 @@ class ExercisePage(QWidget):
         self.send_joint_command([joint_id], [angle], move_time)
 
     def move_to_home(self):
+        """Send the robot to its home position via the Home behavior file."""
         self.parent_ui.start_behavior("Home.json")
 
         # neutral_value = self.emote_mapping.get("Neutral", 1)
@@ -267,13 +272,14 @@ class ExercisePage(QWidget):
     #     self.send_joint_command(joint_ids, home_angles, 10)
 
     def set_buttons_enabled(self, enabled: bool):
+        """Enable or disable all QPushButtons on this page."""
         for btn in self.findChildren(QPushButton):
             btn.setEnabled(enabled)
 
-
+    # ── Perform behavior ─────────────────────────────────────────────────────
     def perform_behavior(self, behavior_file, display_title):
+        """Lock the UI, show the exercise overlay, and start the behavior."""
 
-        # Lock buttons immediately
         self.set_buttons_enabled(False)
 
         self.parent_ui.selected_exercise = display_title
@@ -319,23 +325,28 @@ class ExercisePage(QWidget):
         #     self.delay(frame["WaitTime"] / 1000)
 
     def show_rating_page(self):
+        """Navigate to the rating page."""
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_page)
 
     def on_behavior_finished(self):
-        # Re-enable buttons
+        """Called when a behavior completes — re-enable buttons and go home."""
         self.set_buttons_enabled(True)
 
-        # Send robot back to home position
         self.parent_ui.start_behavior("Home.json", on_finished=self._go_to_rating)
 
     def _go_to_rating(self):
-        # Called once Home.json finishes — now safe to show rating page
+        """Called once Home.json finishes — safe to show the rating page."""
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_page)
 
 
     def closeEvent(self, event):
         self.close_connection()
         event.accept()
+
+
+# ==============================================================================
+# Exercise Overlay
+# ==============================================================================
 
 class ExerciseOverlay(QWidget):
     """
@@ -352,7 +363,7 @@ class ExerciseOverlay(QWidget):
         layout.setContentsMargins(40, 30, 40, 30)
         layout.setSpacing(20)
 
-        # -- Animated GIF — expands to fill available space --
+        # ── Animated GIF ──────────────────────────────────────────────────
         self.gif_label = QLabel()
         self.gif_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.gif_label.setSizePolicy(
@@ -361,7 +372,7 @@ class ExerciseOverlay(QWidget):
         )
         layout.addWidget(self.gif_label, stretch=3)
 
-        # -- "SAMI is performing: X" status line --
+        # ── Status label ─────────────────────────────────────────────────
         self.status_label = QLabel("SAMI is moving...")
         self.status_label.setStyleSheet(
             "color: black; font-size: 48px; font-weight: bold;"
@@ -370,7 +381,7 @@ class ExerciseOverlay(QWidget):
         self.status_label.setWordWrap(True)
         layout.addWidget(self.status_label, stretch=1)
 
-        # -- Why this exercise --
+        # ── Why-this-exercise label ──────────────────────────────────────
         self.why_label = QLabel()
         self.why_label.setWordWrap(True)
         self.why_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -385,7 +396,7 @@ class ExerciseOverlay(QWidget):
         """Update overlay content before it is shown."""
         self.status_label.setText(f"SAMI is performing: {title}")
 
-        # -- Load and start the GIF --
+        # ── Load and start the GIF ───────────────────────────────────────
         if video_path:
             self._movie = QMovie(video_path)
             self.gif_label.setMovie(self._movie)
@@ -1251,7 +1262,17 @@ class ExerciseOverlay(QWidget):
 #         self.parent_ui.trivia_question_page.load_question()
 
 
+# ==============================================================================
+# SAMIControlUI  —  Main application window
+# ==============================================================================
+
 class SAMIControlUI(SAMIControl, QMainWindow):
+    """
+    Top-level window that combines SAMIControl (robot comms) with a
+    QMainWindow (PyQt6 UI).  Manages the page stack, trivia state, and
+    exercise ratings.
+    """
+
     def __init__(self, 
                  arduino_port='/dev/tty.usbserial-10', 
                  baud_rate=115200,
@@ -1273,7 +1294,7 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.last_rating = None
         self.rating_file = "exercise_ratings.txt"
 
-        # ---- Trivia state ---- #
+        # ── Trivia state ─────────────────────────────────────────────────
         self.trivia_questions = []
         self.trivia_index = 0
         self.trivia_score = 0
@@ -1289,6 +1310,7 @@ class SAMIControlUI(SAMIControl, QMainWindow):
                 print(f"Could not connect to Arduino: {e} — running in UI-only mode.")
 
     def delay(self, t):
+        """Block the current thread for *t* seconds."""
         time.sleep(t)
 
     # ── UI entry point ─────────────────────────────────────────────────────────
@@ -1365,10 +1387,12 @@ class SAMIControlUI(SAMIControl, QMainWindow):
 
 
     def load_behavior(self, behavior_file):
+        """Load keyframes from a behavior JSON file."""
         with open(behavior_file, 'r') as file:
             return json.load(file)['Keyframes']
 
     def handle_send_command(self):
+        """Parse the angle/time inputs and send a single joint command."""
         joint_name = self.joint_name_dropdown.currentText()
         try:
             angle = int(self.angle_input.text())
@@ -1380,14 +1404,17 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.send_joint_command([joint_id], [angle], move_time)
 
     def move_to_home(self):
+        """Send all joints to their home angles."""
         joint_ids = [joint['JointID'] for joint in self.full_joint_config]
         home_angles = [joint['HomeAngle'] for joint in self.full_joint_config]
         self.send_joint_command(joint_ids, home_angles, 10)
 
     def get_behavior_files(self):
+        """Return a list of .json files in the behavior folder."""
         return [f for f in os.listdir(self.behavior_folder) if f.endswith('.json')]
 
     def perform_behavior(self):
+        """Start the behavior selected in the legacy dropdown."""
         selected_behavior = self.behavior_dropdown.currentText()
         self.start_behavior(selected_behavior)
         # behavior_path = os.path.join(self.behavior_folder, selected_behavior)
@@ -1414,10 +1441,14 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         #     self.delay(frame["WaitTime"] / 1000)
 
     def closeEvent(self, event):
+        """Close the serial connection before the window is destroyed."""
         self.close_connection()
         event.accept()
 
+    # ── Rating helpers ─────────────────────────────────────────────────────────
+
     def submit_rating(self, value):
+        """Persist the user's exercise rating to disk, then return home."""
         import datetime
 
         interaction = self.selected_exercise or "Unknown"
@@ -1430,12 +1461,13 @@ class SAMIControlUI(SAMIControl, QMainWindow):
 
         self.last_rating = value
 
-        # Go home after rating
+        # ── Return to home page after rating ─────────────────────────────
         self.stack.setCurrentWidget(self.home_page)
 
-    # ---- Trivia helpers ---- #
+    # ── Trivia helpers ─────────────────────────────────────────────────────────
 
     def trivia_load_questions(self, limit=None):
+        """Shuffle trivia CSV and optionally cap at *limit* questions."""
         path = self.trivia_csv
         if not os.path.exists(path):
             print(f"Trivia CSV not found: {path}")
@@ -1453,12 +1485,14 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.trivia_last_correct = False
 
     def trivia_current_question(self, offset=0):
+        """Return the question dict at the current index (+ optional offset)."""
         idx = self.trivia_index + offset
         if 0 <= idx < len(self.trivia_questions):
             return self.trivia_questions[idx]
         return None
 
     def trivia_submit_answer(self, letter):
+        """Check the chosen letter against the correct answer and advance."""
         q = self.trivia_current_question()
         if not q:
             return
