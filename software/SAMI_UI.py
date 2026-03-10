@@ -35,6 +35,7 @@ from pages.TriviaPage import TriviaPage, TriviaQuestionPage, TriviaAnswerPage, T
 from pages.data_page.DataPage import DataPage
 from pages.data_page.SensorDataPage import SensorDataPage
 from pages.data_page.RatingDataPage import RatingDataPage
+from pages.DevPage import DevPage
 
 # ── UI mode toggle ───────────────────────────────────────────────────────────
 # Set to True  → full presentation UI  (pages, stack, trivia, etc.)
@@ -408,6 +409,7 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.trivia_question_page = TriviaQuestionPage(self); self.stack.addWidget(self.trivia_question_page)
         self.trivia_answer_page = TriviaAnswerPage(self);  self.stack.addWidget(self.trivia_answer_page)
         self.trivia_score_page  = TriviaScorePage(self);   self.stack.addWidget(self.trivia_score_page)
+        self.dev_page           = DevPage(self);           self.stack.addWidget(self.dev_page)
 
         self.stack.setCurrentWidget(self.home_page)
 

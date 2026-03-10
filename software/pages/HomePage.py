@@ -93,6 +93,21 @@ class HomePage(QWidget):
         layout.addLayout(grid)
         layout.addStretch(1)
 
+        # ── Dev page shortcut (remove before production) ─────────────────────
+        dev_btn = QPushButton("🛠  Component Dev Page")
+        dev_btn.setMinimumSize(350, 60)
+        dev_btn.setStyleSheet("""
+            QPushButton {
+                font-size: 24px; font-weight: bold; color: #555;
+                border-radius: 12px; background: #ddd; border: 2px dashed #999;
+            }
+            QPushButton:hover { background: #ccc; }
+        """)
+        dev_btn.clicked.connect(
+            lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.dev_page)
+        )
+        layout.addWidget(dev_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+
         # home_robot_btn = QPushButton("Home", self)
         # home_robot_btn.clicked.connect(self.parent_ui.move_to_home)
         # layout.addWidget(home_robot_btn)
