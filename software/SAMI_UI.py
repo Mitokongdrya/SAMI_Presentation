@@ -32,7 +32,7 @@ from components.page_title import PageTitle
 from components.action_button import ActionButton
 from pages.HomePage import HomePage
 from pages.RatingPage import RatingPage
-from pages.TriviaPage import TriviaPage, TriviaQuestionPage, TriviaAnswerPage, TriviaScorePage
+from pages.trivia_page import TriviaLandingPage, TriviaQuestionPage, TriviaAnswerPage, TriviaScorePage
 from pages.data_page.DataPage import DataPage
 from pages.data_page.SensorDataPage import SensorDataPage
 from pages.data_page.RatingDataPage import RatingDataPage
@@ -392,7 +392,7 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.sensor_data_page   = SensorDataPage(self);    self.stack.addWidget(self.sensor_data_page)
         self.rating_data_page   = RatingDataPage(self);    self.stack.addWidget(self.rating_data_page)
         self.rating_page        = RatingPage(self);        self.stack.addWidget(self.rating_page)
-        self.trivia_page        = TriviaPage(self);        self.stack.addWidget(self.trivia_page)
+        self.trivia_page        = TriviaLandingPage(self);        self.stack.addWidget(self.trivia_page)
         self.trivia_question_page = TriviaQuestionPage(self); self.stack.addWidget(self.trivia_question_page)
         self.trivia_answer_page = TriviaAnswerPage(self);  self.stack.addWidget(self.trivia_answer_page)
         self.trivia_score_page  = TriviaScorePage(self);   self.stack.addWidget(self.trivia_score_page)
