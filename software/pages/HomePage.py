@@ -15,6 +15,7 @@ from PyQt6.QtCore import Qt
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.page_title import PageTitle
 from components.icon_nav_button import IconNavButton
+from styles.theme import TEXT_SECONDARY, RADIUS_SM, FONT_CAPTION
 
 
 # ==============================================================================
@@ -79,12 +80,12 @@ class HomePage(QWidget):
         # ── Dev page shortcut (remove before production) ─────────────────────
         dev_btn = QPushButton("🛠  Component Dev Page")
         dev_btn.setMinimumSize(350, 60)
-        dev_btn.setStyleSheet("""
-            QPushButton {
-                font-size: 24px; font-weight: bold; color: #555;
-                border-radius: 12px; background: #ddd; border: 2px dashed #999;
-            }
-            QPushButton:hover { background: #ccc; }
+        dev_btn.setStyleSheet(f"""
+            QPushButton {{
+                font-size: {FONT_CAPTION}px; font-weight: bold; color: {TEXT_SECONDARY};
+                border-radius: {RADIUS_SM}px; background: #ddd; border: 2px dashed #999;
+            }}
+            QPushButton:hover {{ background: #ccc; }}
         """)
         dev_btn.clicked.connect(
             lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.dev_page)

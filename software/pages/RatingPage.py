@@ -17,6 +17,7 @@ from PyQt6.QtCore import Qt, QSize
 from components.home_button import HomeButton
 from components.button import Button
 from components.page_title import PageTitle
+from styles.theme import BORDER_COLOR, BORDER_WIDTH, RADIUS_LG, FONT_LABEL, BG_HOME_BUTTON
 
 
 # ==============================================================================
@@ -34,7 +35,7 @@ class RatingPage(QWidget):
         layout = QVBoxLayout(self)
 
         # ── Title ────────────────────────────────────────────────────────────
-        layout.addWidget(PageTitle("Rate this Exercise"))
+        layout.addWidget(PageTitle("Rate this Interaction"))
         layout.addStretch(1)
 
         # ── Rating buttons row ───────────────────────────────────────────────
@@ -64,11 +65,11 @@ class RatingPage(QWidget):
             rating_btn.setStyleSheet(f"""
                 QToolButton {{
                     background-color: {color};
-                    border-radius: 20px;
-                    font-size: 32px;
+                    border-radius: {RADIUS_LG}px;
+                    font-size: {FONT_LABEL}px;
                     font-weight: bold;
                     color: black;
-                    border: 3px solid #333;
+                    border: {BORDER_WIDTH}px solid {BORDER_COLOR};
                     padding-top: 60px;
                     padding-bottom: 40px;
                 }}
@@ -80,7 +81,7 @@ class RatingPage(QWidget):
             row.addWidget(rating_btn)
 
         # ── "Prefer Not To Rate" option ──────────────────────────────────────
-        self.no_rate_btn = Button("Prefer Not To Rate", 300, 80, "#E6EEF3")
+        self.no_rate_btn = Button("Prefer Not To Rate", 300, 80, BG_HOME_BUTTON)
         layout.addWidget(self.no_rate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
         self.no_rate_btn.clicked.connect(lambda: self.parent_ui.submit_rating("None"))
 

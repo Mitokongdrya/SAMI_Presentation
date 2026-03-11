@@ -5,6 +5,10 @@
 from PyQt6.QtWidgets import QToolButton
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt, QSize
+from styles.theme import (
+    BG_BUTTON, BG_BUTTON_HOVER, TEXT_ON_BUTTON,
+    BORDER_COLOR, BORDER_WIDTH, RADIUS_LG, FONT_SUBTITLE,
+)
 
 
 class IconNavButton(QToolButton):
@@ -25,11 +29,11 @@ class IconNavButton(QToolButton):
     icon_size : int
         Icon width and height in pixels (default 170).
     bg : str
-        Background colour (default "#FFCCCC").
+        Background colour (default BG_BUTTON).
     bg_hover : str
-        Hover background colour (default "#FFB3B3").
+        Hover background colour (default BG_BUTTON_HOVER).
     font_size : int
-        Font size in pixels (default 48).
+        Font size in pixels (default FONT_SUBTITLE).
     """
 
     def __init__(
@@ -38,9 +42,9 @@ class IconNavButton(QToolButton):
         icon_path: str,
         size: int = 400,
         icon_size: int = 170,
-        bg: str = "#FFCCCC",
-        bg_hover: str = "#FFB3B3",
-        font_size: int = 48,
+        bg: str = BG_BUTTON,
+        bg_hover: str = BG_BUTTON_HOVER,
+        font_size: int = FONT_SUBTITLE,
     ):
         super().__init__()
         self.setText(text)
@@ -50,13 +54,13 @@ class IconNavButton(QToolButton):
         self.setMinimumSize(size, size)
         self.setStyleSheet(f"""
             QToolButton {{
-                color: #000;
+                color: {TEXT_ON_BUTTON};
                 font-size: {font_size}px;
                 font-weight: bold;
                 padding: 20px;
-                border-radius: 20px;
+                border-radius: {RADIUS_LG}px;
                 background: {bg};
-                border: 3px solid #333;
+                border: {BORDER_WIDTH}px solid {BORDER_COLOR};
             }}
             QToolButton:hover {{ background: {bg_hover}; }}
         """)

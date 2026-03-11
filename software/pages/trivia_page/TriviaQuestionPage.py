@@ -17,6 +17,10 @@ from PyQt6.QtCore import Qt
 from components.home_button import HomeButton
 from components.action_button import ActionButton
 from components.confirm_dialog import ConfirmDialog
+from styles.theme import (
+    TEXT_PRIMARY, BG_CARD, BORDER_COLOR, BORDER_WIDTH,
+    RADIUS_MD, FONT_LABEL, FONT_BODY, FONT_BUTTON,
+)
 
 
 # ==============================================================================
@@ -37,9 +41,9 @@ class TriviaQuestionPage(QWidget):
         # ── Counter + score row ──────────────────────────────────────────────
         info_row = QHBoxLayout()
         self.counter_label = QLabel("Question 1 / ?")
-        self.counter_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #333;")
+        self.counter_label.setStyleSheet(f"font-size: {FONT_LABEL}px; font-weight: bold; color: {TEXT_PRIMARY};")
         self.score_label = QLabel("Score: 0 / 0")
-        self.score_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #333;")
+        self.score_label.setStyleSheet(f"font-size: {FONT_LABEL}px; font-weight: bold; color: {TEXT_PRIMARY};")
         info_row.addWidget(self.counter_label)
         info_row.addStretch()
         info_row.addWidget(self.score_label)
@@ -49,13 +53,13 @@ class TriviaQuestionPage(QWidget):
         self.question_label = QLabel()
         self.question_label.setWordWrap(True)
         self.question_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.question_label.setStyleSheet("""
-            font-size: 36px;
+        self.question_label.setStyleSheet(f"""
+            font-size: {FONT_BODY}px;
             font-weight: bold;
-            color: #333;
-            background: #fff;
-            border-radius: 16px;
-            border: 3px solid #333;
+            color: {TEXT_PRIMARY};
+            background: {BG_CARD};
+            border-radius: {RADIUS_MD}px;
+            border: {BORDER_WIDTH}px solid {BORDER_COLOR};
             padding: 24px 32px;
         """)
         layout.addWidget(self.question_label)
@@ -111,7 +115,7 @@ class TriviaQuestionPage(QWidget):
             row, col = divmod(i, 2)
             btn = ActionButton(
                 f"{letter}.  {text}",
-                min_width=600, min_height=130, font_size=28, text_align="left",
+                min_width=600, min_height=130, font_size=FONT_BUTTON, text_align="left",
             )
             btn.clicked.connect(lambda _, l=letter: self._submit(l))
             self.answers_grid.addWidget(btn, row, col)

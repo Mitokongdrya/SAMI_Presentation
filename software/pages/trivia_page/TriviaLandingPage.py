@@ -14,6 +14,12 @@ from PyQt6.QtCore import Qt
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.home_button import HomeButton
 from components.page_title import PageTitle
+from styles.theme import (
+    BG_BUTTON, BG_BUTTON_HOVER, BG_SELECTED, BG_DISABLED,
+    TEXT_PRIMARY, TEXT_ON_BUTTON, TEXT_DISABLED,
+    BORDER_COLOR, BORDER_DISABLED, BORDER_WIDTH,
+    RADIUS_LG, FONT_SUBTITLE, FONT_HEADING,
+)
 
 
 # ==============================================================================
@@ -39,26 +45,26 @@ class TriviaLandingPage(QWidget):
         # ── Question count prompt ────────────────────────────────────────────
         choose_label = QLabel("How many questions?")
         choose_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        choose_label.setStyleSheet("font-size: 40px; font-weight: bold; color: #333;")
+        choose_label.setStyleSheet(f"font-size: {FONT_HEADING}px; font-weight: bold; color: {TEXT_PRIMARY};")
         layout.addWidget(choose_label)
 
         layout.addSpacing(16)
 
         # ── 5 / 10 selector row ─────────────────────────────────────────────
-        BTN_STYLE = """
-            QPushButton {{
-                font-size: 48px;
+        BTN_STYLE = f"""
+            QPushButton {{{{
+                font-size: {FONT_SUBTITLE}px;
                 font-weight: bold;
-                color: black;
-                border-radius: 20px;
-                background: {bg};
-                border: {border};
-            }}
-            QPushButton:hover {{ background: #FFB3B3; }}
+                color: {TEXT_ON_BUTTON};
+                border-radius: {RADIUS_LG}px;
+                background: {{bg}};
+                border: {{border}};
+            }}}}
+            QPushButton:hover {{{{ background: {BG_BUTTON_HOVER}; }}}}
         """
-        NORMAL_BG     = "#FFCCCC"
-        SELECTED_BG   = "#FF8080"
-        NORMAL_BORDER = "3px solid #333"
+        NORMAL_BG       = BG_BUTTON
+        SELECTED_BG_VAL = BG_SELECTED
+        NORMAL_BORDER   = f"{BORDER_WIDTH}px solid {BORDER_COLOR}"
         SELECTED_BORDER = "5px solid #000"
 
         count_row = QHBoxLayout()
@@ -76,10 +82,10 @@ class TriviaLandingPage(QWidget):
         def select_count(count):
             self._selected_count = count
             if count == 5:
-                self._btn5.setStyleSheet(BTN_STYLE.format(bg=SELECTED_BG, border=SELECTED_BORDER))
+                self._btn5.setStyleSheet(BTN_STYLE.format(bg=SELECTED_BG_VAL, border=SELECTED_BORDER))
                 self._btn10.setStyleSheet(BTN_STYLE.format(bg=NORMAL_BG, border=NORMAL_BORDER))
             else:
-                self._btn10.setStyleSheet(BTN_STYLE.format(bg=SELECTED_BG, border=SELECTED_BORDER))
+                self._btn10.setStyleSheet(BTN_STYLE.format(bg=SELECTED_BG_VAL, border=SELECTED_BORDER))
                 self._btn5.setStyleSheet(BTN_STYLE.format(bg=NORMAL_BG, border=NORMAL_BORDER))
             self._start_btn.setEnabled(True)
             self._start_btn.setStyleSheet(BTN_STYLE.format(bg=NORMAL_BG, border=NORMAL_BORDER))
@@ -94,15 +100,15 @@ class TriviaLandingPage(QWidget):
         self._start_btn = QPushButton("Start Trivia")
         self._start_btn.setMinimumSize(400, 140)
         self._start_btn.setEnabled(False)
-        self._start_btn.setStyleSheet("""
-            QPushButton {
-                font-size: 48px;
+        self._start_btn.setStyleSheet(f"""
+            QPushButton {{
+                font-size: {FONT_SUBTITLE}px;
                 font-weight: bold;
-                color: #888;
-                border-radius: 20px;
-                background: #e0e0e0;
-                border: 3px solid #aaa;
-            }
+                color: {TEXT_DISABLED};
+                border-radius: {RADIUS_LG}px;
+                background: {BG_DISABLED};
+                border: {BORDER_WIDTH}px solid {BORDER_DISABLED};
+            }}
         """)
         self._start_btn.clicked.connect(self._start_trivia)
         layout.addWidget(self._start_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -121,21 +127,21 @@ class TriviaLandingPage(QWidget):
         """Reset selection every time the page is shown."""
         super().showEvent(event)
         self._selected_count = None
-        BTN_STYLE = """
-            QPushButton {{
-                font-size: 48px; font-weight: bold; color: black;
-                border-radius: 20px; background: #FFCCCC; border: 3px solid #333;
-            }}
-            QPushButton:hover {{ background: #FFB3B3; }}
+        BTN_STYLE = f"""
+            QPushButton {{{{
+                font-size: {FONT_SUBTITLE}px; font-weight: bold; color: {TEXT_ON_BUTTON};
+                border-radius: {RADIUS_LG}px; background: {BG_BUTTON}; border: {BORDER_WIDTH}px solid {BORDER_COLOR};
+            }}}}
+            QPushButton:hover {{{{ background: {BG_BUTTON_HOVER}; }}}}
         """
         self._btn5.setStyleSheet(BTN_STYLE.format())
         self._btn10.setStyleSheet(BTN_STYLE.format())
         self._start_btn.setEnabled(False)
-        self._start_btn.setStyleSheet("""
-            QPushButton {
-                font-size: 48px; font-weight: bold; color: #888;
-                border-radius: 20px; background: #e0e0e0; border: 3px solid #aaa;
-            }
+        self._start_btn.setStyleSheet(f"""
+            QPushButton {{
+                font-size: {FONT_SUBTITLE}px; font-weight: bold; color: {TEXT_DISABLED};
+                border-radius: {RADIUS_LG}px; background: {BG_DISABLED}; border: {BORDER_WIDTH}px solid {BORDER_DISABLED};
+            }}
         """)
 
     def _start_trivia(self):

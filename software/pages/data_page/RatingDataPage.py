@@ -17,6 +17,11 @@ from PyQt6.QtCore import Qt
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.page_title import PageTitle
 from components.back_home_nav import BackHomeNav
+from styles.theme import (
+    BG_CARD, BG_BUTTON, TEXT_ON_BUTTON, TEXT_PRIMARY,
+    BORDER_COLOR, BORDER_DISABLED, BORDER_WIDTH_SM,
+    RADIUS_SM, FONT_TABLE, FONT_CAPTION,
+)
 
 
 # ==============================================================================
@@ -58,22 +63,22 @@ class RatingDataPage(QWidget):
         self.table.setHorizontalHeaderLabels(["Timestamp", "Interaction", "Rating"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.table.setStyleSheet("""
-            QTableWidget {
-                color: #000;
-                font-size: 22px;
-                background: #fff;
-                border-radius: 12px;
-                border: 2px solid #aaa;
-            }
-            QHeaderView::section {
-                color: #000;
-                font-size: 24px;
+        self.table.setStyleSheet(f"""
+            QTableWidget {{
+                color: {TEXT_ON_BUTTON};
+                font-size: {FONT_TABLE}px;
+                background: {BG_CARD};
+                border-radius: {RADIUS_SM}px;
+                border: {BORDER_WIDTH_SM}px solid {BORDER_DISABLED};
+            }}
+            QHeaderView::section {{
+                color: {TEXT_ON_BUTTON};
+                font-size: {FONT_CAPTION}px;
                 font-weight: bold;
-                background: #FFCCCC;
-                border: 1px solid #aaa;
+                background: {BG_BUTTON};
+                border: 1px solid {BORDER_DISABLED};
                 padding: 6px;
-            }
+            }}
         """)
         self.table.setMinimumHeight(400)
         layout.addWidget(self.table)
@@ -148,10 +153,10 @@ class RatingDataPage(QWidget):
             card.setStyleSheet(f"""
                 background: {color};
                 border-radius: 14px;
-                border: 2px solid #333;
-                font-size: 22px;
+                border: {BORDER_WIDTH_SM}px solid {BORDER_COLOR};
+                font-size: {FONT_TABLE}px;
                 font-weight: bold;
                 padding: 16px 24px;
-                color: #333;
+                color: {TEXT_PRIMARY};
             """)
             self.summary_layout.addWidget(card)

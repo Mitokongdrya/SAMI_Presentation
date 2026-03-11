@@ -4,11 +4,17 @@
 
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt6.QtCore import Qt
+from styles.theme import (
+    BG_APP, BG_BUTTON, BG_BUTTON_HOVER, BG_DANGER, BG_DANGER_HOVER,
+    TEXT_PRIMARY, TEXT_ON_BUTTON,
+    BORDER_COLOR, BORDER_WIDTH, RADIUS_LG, RADIUS_MD,
+    FONT_BUTTON,
+)
 
 
 class ConfirmDialog(QDialog):
     """
-    Modal confirmation dialog matching the app's #96C4DB / #FFCCCC aesthetic.
+    Modal confirmation dialog matching the app's themed aesthetic.
 
     Returns QDialog.DialogCode.Accepted when the user confirms and
     QDialog.DialogCode.Rejected when they cancel.
@@ -36,7 +42,7 @@ class ConfirmDialog(QDialog):
         self.setWindowTitle("Confirm")
         self.setModal(True)
         self.setMinimumWidth(600)
-        self.setStyleSheet("background-color: #96C4DB;")
+        self.setStyleSheet(f"background-color: {BG_APP};")
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(56, 48, 56, 48)
@@ -47,7 +53,7 @@ class ConfirmDialog(QDialog):
         msg.setAlignment(Qt.AlignmentFlag.AlignCenter)
         msg.setWordWrap(True)
         msg.setStyleSheet(
-            "font-size: 28px; font-weight: bold; color: #333; background: transparent;"
+            f"font-size: {FONT_BUTTON}px; font-weight: bold; color: {TEXT_PRIMARY}; background: transparent;"
         )
         layout.addWidget(msg)
 
@@ -59,19 +65,21 @@ class ConfirmDialog(QDialog):
         confirm_btn = QPushButton(confirm_text)
 
         for btn, is_confirm in [(cancel_btn, False), (confirm_btn, True)]:
+            bg = BG_DANGER if is_confirm else BG_BUTTON
+            bg_hov = BG_DANGER_HOVER if is_confirm else BG_BUTTON_HOVER
             btn.setMinimumHeight(80)
             btn.setStyleSheet(f"""
                 QPushButton {{
-                    font-size: 28px;
+                    font-size: {FONT_BUTTON}px;
                     font-weight: bold;
-                    color: black;
-                    border-radius: 16px;
-                    background: {'#ff6666' if is_confirm else '#FFCCCC'};
-                    border: 3px solid #333;
+                    color: {TEXT_ON_BUTTON};
+                    border-radius: {RADIUS_MD}px;
+                    background: {bg};
+                    border: {BORDER_WIDTH}px solid {BORDER_COLOR};
                     padding: 12px 28px;
                 }}
                 QPushButton:hover {{
-                    background: {'#ff3333' if is_confirm else '#FFB3B3'};
+                    background: {bg_hov};
                 }}
             """)
             btn_row.addWidget(btn)

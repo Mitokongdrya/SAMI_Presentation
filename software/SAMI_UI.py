@@ -26,6 +26,10 @@ from PyQt6.QtCore import Qt, QTimer
 
 # ── Project imports ───────────────────────────────────────────────────────────
 from SAMIControl import SAMIControl
+from styles.theme import (
+    BG_APP, TEXT_PRIMARY, TEXT_ON_BUTTON,
+    FONT_SUBTITLE, FONT_BUTTON,
+)
 from components.home_button import HomeButton
 from components.button import Button
 from components.page_title import PageTitle
@@ -283,7 +287,7 @@ class ExerciseOverlay(QWidget):
         # ── Status label ─────────────────────────────────────────────────
         self.status_label = QLabel("SAMI is moving...")
         self.status_label.setStyleSheet(
-            "color: black; font-size: 48px; font-weight: bold;"
+            f"color: {TEXT_ON_BUTTON}; font-size: {FONT_SUBTITLE}px; font-weight: bold;"
         )
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.status_label.setWordWrap(True)
@@ -294,7 +298,7 @@ class ExerciseOverlay(QWidget):
         self.why_label.setWordWrap(True)
         self.why_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.why_label.setStyleSheet(
-            "color: #333; font-size: 28px; font-style: italic;"
+            f"color: {TEXT_PRIMARY}; font-size: {FONT_BUTTON}px; font-style: italic;"
         )
         layout.addWidget(self.why_label, stretch=1)
 
@@ -380,7 +384,7 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         """Full presentation UI: stacked pages, trivia, exercise overlay, data pages."""
         self.setWindowTitle("SAMI UI")
         self.resize(1920, 1080)
-        self.setStyleSheet("background-color: #96C4DB;")
+        self.setStyleSheet(f"background-color: {BG_APP};")
 
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)

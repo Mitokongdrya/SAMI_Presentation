@@ -16,6 +16,10 @@ from PyQt6.QtCore import Qt
 from components.home_button import HomeButton
 from components.action_button import ActionButton
 from components.confirm_dialog import ConfirmDialog
+from styles.theme import (
+    TEXT_PRIMARY, COLOR_CORRECT, COLOR_WRONG,
+    FONT_TITLE, FONT_BODY, FONT_LABEL, FONT_HEADING,
+)
 
 
 # ==============================================================================
@@ -38,23 +42,23 @@ class TriviaAnswerPage(QWidget):
         # ── Result labels ────────────────────────────────────────────────────
         self.result_label = QLabel()
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.result_label.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+        self.result_label.setStyleSheet(f"font-size: {FONT_TITLE}px; font-weight: bold; color: {TEXT_PRIMARY};")
         layout.addWidget(self.result_label)
 
         self.correct_label = QLabel()
         self.correct_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.correct_label.setStyleSheet("font-size: 36px; color: #333;")
+        self.correct_label.setStyleSheet(f"font-size: {FONT_BODY}px; color: {TEXT_PRIMARY};")
         layout.addWidget(self.correct_label)
 
         self.score_label = QLabel()
         self.score_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.score_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #333;")
+        self.score_label.setStyleSheet(f"font-size: {FONT_LABEL}px; font-weight: bold; color: {TEXT_PRIMARY};")
         layout.addWidget(self.score_label)
 
         layout.addStretch(1)
 
         # ── Next question button ─────────────────────────────────────────────
-        next_btn = ActionButton("Next Question", min_width=400, min_height=120, font_size=40)
+        next_btn = ActionButton("Next Question", min_width=400, min_height=120, font_size=FONT_HEADING)
         next_btn.clicked.connect(self._next)
         layout.addWidget(next_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
@@ -83,10 +87,10 @@ class TriviaAnswerPage(QWidget):
 
         if was_correct:
             self.result_label.setText("✅  Correct!")
-            self.result_label.setStyleSheet("font-size: 64px; font-weight: bold; color: #2a9d2a;")
+            self.result_label.setStyleSheet(f"font-size: {FONT_TITLE}px; font-weight: bold; color: {COLOR_CORRECT};")
         else:
             self.result_label.setText("❌  Wrong!")
-            self.result_label.setStyleSheet("font-size: 64px; font-weight: bold; color: #cc2222;")
+            self.result_label.setStyleSheet(f"font-size: {FONT_TITLE}px; font-weight: bold; color: {COLOR_WRONG};")
 
         self.correct_label.setText(f"Answer: {correct_text}")
         answered = self.parent_ui.trivia_index

@@ -14,6 +14,7 @@ from PyQt6.QtCore import Qt
 
 # ── Project imports ───────────────────────────────────────────────────────────
 from components.action_button import ActionButton
+from styles.theme import TEXT_PRIMARY, FONT_TITLE, FONT_BODY, FONT_HEADING
 
 
 # ==============================================================================
@@ -41,12 +42,12 @@ class TriviaScorePage(QWidget):
 
         self.score_label = QLabel()
         self.score_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.score_label.setStyleSheet("font-size: 64px; font-weight: bold; color: #333;")
+        self.score_label.setStyleSheet(f"font-size: {FONT_TITLE}px; font-weight: bold; color: {TEXT_PRIMARY};")
         layout.addWidget(self.score_label)
 
         self.msg_label = QLabel()
         self.msg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.msg_label.setStyleSheet("font-size: 36px; color: #333;")
+        self.msg_label.setStyleSheet(f"font-size: {FONT_BODY}px; color: {TEXT_PRIMARY};")
         layout.addWidget(self.msg_label)
 
         layout.addStretch(1)
@@ -55,11 +56,11 @@ class TriviaScorePage(QWidget):
         btn_row = QHBoxLayout()
         btn_row.setSpacing(40)
 
-        play_again_btn = ActionButton("Play Again", min_width=360, min_height=120, font_size=40)
+        play_again_btn = ActionButton("Play Again", min_width=360, min_height=120, font_size=FONT_HEADING)
         play_again_btn.clicked.connect(self._play_again)
         btn_row.addWidget(play_again_btn)
 
-        home_btn = ActionButton("Go Home", min_width=360, min_height=120, font_size=40)
+        home_btn = ActionButton("Go Home", min_width=360, min_height=120, font_size=FONT_HEADING)
         home_btn.clicked.connect(
             lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
         )

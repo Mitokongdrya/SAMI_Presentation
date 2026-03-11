@@ -20,6 +20,7 @@ from components.confirm_dialog import ConfirmDialog
 from components.back_home_nav import BackHomeNav
 from components.home_button import HomeButton
 from components.button import Button
+from styles.theme import BG_BUTTON, BG_HOME_BUTTON, TEXT_SECONDARY, FONT_BUTTON
 
 
 # ==============================================================================
@@ -175,12 +176,12 @@ class DevPage(QWidget):
         row6 = QHBoxLayout()
         row6.setSpacing(20)
 
-        gb1 = Button("Prefer Not To Rate", 300, 80, "#E6EEF3")
-        gb1.clicked.connect(lambda: print("[DevPage] Button #E6EEF3 clicked"))
+        gb1 = Button("Prefer Not To Rate", 300, 80, BG_HOME_BUTTON)
+        gb1.clicked.connect(lambda: print("[DevPage] Button BG_HOME_BUTTON clicked"))
         row6.addWidget(gb1)
 
-        gb2 = Button("Another Button", 300, 80, "#FFCCCC")
-        gb2.clicked.connect(lambda: print("[DevPage] Button #FFCCCC clicked"))
+        gb2 = Button("Another Button", 300, 80, BG_BUTTON)
+        gb2.clicked.connect(lambda: print("[DevPage] Button BG_BUTTON clicked"))
         row6.addWidget(gb2)
 
         row6.addStretch()
@@ -214,7 +215,7 @@ class DevPage(QWidget):
         """Create a styled section header label."""
         lbl = QLabel(text)
         lbl.setStyleSheet(
-            "font-size: 28px; font-weight: bold; color: #555;"
+            f"font-size: {FONT_BUTTON}px; font-weight: bold; color: {TEXT_SECONDARY};"
             "border-bottom: 2px solid #999; padding-bottom: 6px;"
             "margin-top: 16px;"
         )
