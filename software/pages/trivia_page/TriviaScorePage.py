@@ -60,10 +60,8 @@ class TriviaScorePage(QWidget):
         play_again_btn.clicked.connect(self._play_again)
         btn_row.addWidget(play_again_btn)
 
-        home_btn = ActionButton("Go Home", min_width=360, min_height=120, font_size=FONT_HEADING)
-        home_btn.clicked.connect(
-            lambda: self.parent_ui.stack.setCurrentWidget(self.parent_ui.home_page)
-        )
+        home_btn = ActionButton("Rate & Finish", min_width=360, min_height=120, font_size=FONT_HEADING)
+        home_btn.clicked.connect(self._rate_and_finish)
         btn_row.addWidget(home_btn)
 
         layout.addLayout(btn_row)
@@ -85,8 +83,16 @@ class TriviaScorePage(QWidget):
             msg = "Better luck next time! 💪"
         self.msg_label.setText(msg)
 
+        # ── Persist the score to trivia_scores.txt ───────────────────────
+        self.parent_ui.trivia_save_score()
+
     def _play_again(self):
         """Reload questions and restart the trivia game."""
         self.parent_ui.trivia_load_questions(limit=self.parent_ui.trivia_index)
         self.parent_ui.stack.setCurrentWidget(self.parent_ui.trivia_question_page)
         self.parent_ui.trivia_question_page.load_question()
+
+    def _rate_and_finish(self):
+        """Navigate to the rating page so the user can rate the trivia round."""
+        self.parent_ui.selected_exercise = "Trivia"
+        self.parent_ui.stack.setCurrentWidget(self.parent_ui.rating_page)

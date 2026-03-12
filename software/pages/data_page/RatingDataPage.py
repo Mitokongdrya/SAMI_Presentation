@@ -59,8 +59,8 @@ class RatingDataPage(QWidget):
         # ── Full ratings table ───────────────────────────────────────────────
         from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
         self.table = QTableWidget()
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["Timestamp", "Interaction", "Rating"])
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels(["Timestamp", "Interaction", "Rating", "Trivia Score"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setStyleSheet(f"""
@@ -95,7 +95,9 @@ class RatingDataPage(QWidget):
     def _load_ratings(self):
         """
         Parse exercise_ratings.txt, fill the table, and rebuild summary cards.
-        Each line is expected to be:  timestamp | exercise name | rating
+        Each line is expected to be:
+            timestamp | interaction | rating | trivia_score (optional)
+        Older 3-column lines are handled gracefully.
         """
         from PyQt6.QtWidgets import QTableWidgetItem
         from collections import defaultdict
@@ -106,23 +108,30 @@ class RatingDataPage(QWidget):
             with open(self.rating_file, "r") as f:
                 for line in f:
                     parts = [p.strip() for p in line.strip().split("|")]
-                    if len(parts) == 3:
-                        rows.append(parts)
+                    if len(parts) >= 3:
+                        ts       = parts[0]
+                        exercise = parts[1]
+                        rating   = parts[2]
+                        trivia   = parts[3] if len(parts) >= 4 else ""
+                        rows.append((ts, exercise, rating, trivia))
 
         # ── Populate the table, most-recent entry first ──────────────────────
         self.table.setRowCount(len(rows))
-        for r, (ts, exercise, rating) in enumerate(reversed(rows)):
+        for r, (ts, exercise, rating, trivia) in enumerate(reversed(rows)):
             self.table.setItem(r, 0, QTableWidgetItem(ts))
             self.table.setItem(r, 1, QTableWidgetItem(exercise))
             rating_item = QTableWidgetItem(rating)
             rating_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.table.setItem(r, 2, rating_item)
+            trivia_item = QTableWidgetItem(trivia)
+            trivia_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.table.setItem(r, 3, trivia_item)
         if self.table.rowCount() > 0:
             self.table.setRowHeight(0, 48)
 
         # ── Compute per-exercise averages (ignoring "None" entries) ──────────
         totals: dict = defaultdict(list)
-        for _, exercise, rating in rows:
+        for _, exercise, rating, _ in rows:
             if rating != "None":
                 try:
                     totals[exercise].append(int(rating))

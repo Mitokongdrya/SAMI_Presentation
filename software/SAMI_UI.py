@@ -351,6 +351,8 @@ class SAMIControlUI(SAMIControl, QMainWindow):
         self.selected_exercise = None
         self.last_rating = None
         self.rating_file = "exercise_ratings.txt"
+        self.trivia_score_file = "trivia_scores.txt"
+        self.last_trivia_score_str = ""  # e.g. "7/10", set after trivia ends
 
         # ── Trivia state ─────────────────────────────────────────────────
         self.trivia_questions = []
@@ -507,21 +509,42 @@ class SAMIControlUI(SAMIControl, QMainWindow):
     # ── Rating helpers ─────────────────────────────────────────────────────────
 
     def submit_rating(self, value):
-        """Persist the user's exercise rating to disk, then return home."""
+        """Persist the user's interaction rating to disk, then return home."""
         import datetime
 
         interaction = self.selected_exercise or "Unknown"
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        trivia_score = self.last_trivia_score_str or ""
 
-        line = f"{timestamp} | {interaction} | {value}\n"
+        line = f"{timestamp} | {interaction} | {value} | {trivia_score}\n"
 
         with open(self.rating_file, "a") as f:
             f.write(line)
 
         self.last_rating = value
 
+        # ── Reset trivia score context after writing ─────────────────────
+        self.last_trivia_score_str = ""
+
         # ── Return to home page after rating ─────────────────────────────
         self.stack.setCurrentWidget(self.home_page)
+
+    def trivia_save_score(self):
+        """Log the trivia round score to trivia_scores.txt."""
+        import datetime
+
+        total = len(self.trivia_questions)
+        score = self.trivia_score
+        pct = int(score / total * 100) if total else 0
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        line = f"{timestamp} | {score}/{total} | {pct}%\n"
+
+        with open(self.trivia_score_file, "a") as f:
+            f.write(line)
+
+        # ── Store for the rating page to reference ───────────────────────
+        self.last_trivia_score_str = f"{score}/{total}"
 
     # ── Trivia helpers ─────────────────────────────────────────────────────────
 
