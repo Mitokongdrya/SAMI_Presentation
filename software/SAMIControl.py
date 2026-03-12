@@ -96,7 +96,7 @@ class SAMIControl:
     def send_emote(self, emote_id):
         if not self._behavior_done:
             self.stop_behavior()
-        self.send_emote(emote_id)
+        self._send_emote(emote_id)
 
     # Private version that just sends without checking anything
     def _send_emote(self, emote_id):
@@ -151,9 +151,8 @@ class SAMIControl:
 
             if hasattr(self, "_behavior_finished_callback") and self._behavior_finished_callback:
                 from PyQt6.QtCore import QTimer
-
-            # 🔐 Safely return to GUI thread
-            QTimer.singleShot(0, self._behavior_finished_callback)
+                # 🔐 Safely return to GUI thread
+                QTimer.singleShot(0, self._behavior_finished_callback)
 
         else:
             threading.Timer(
