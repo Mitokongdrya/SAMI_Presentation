@@ -35,8 +35,27 @@ Captions are a mini monitor hooked up to the computer, speakers, video and micro
 High level command and operation is managed on a computer system, 
 Low level communication with the robot is performed via serial over USB, using the communication packet architecture presented below. 
 
+## How to Run
 
+1. **Set up the Python environment:**
+   ```bash
+   cd software
+   python3 -m venv sami_env
+   source sami_env/bin/activate
+   pip install -r requirements.txt
+   ```
 
+2. **Connect the robot hardware:**
+   - Plug in Arduino USB (for robot control)
+   - Plug in Sensor Box USB (for button/sensor input)
+   - Verify connections in Device Manager or `ls /dev/tty*`
+
+3. **Run the GUI:**
+   ```bash
+   python SAMI_UI.py
+   ```
+
+For detailed setup instructions, see `software/README.md`.
 
 ## Components/Packages/How TF do I organize this???
 Mechanical
