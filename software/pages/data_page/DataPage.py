@@ -45,8 +45,8 @@ class DataPage(QWidget):
         grid.setVerticalSpacing(40)
 
         sections = [
-            ("Sensor Demo", "icons/Sensor.svg"),
-            ("Rating Data", "icons/Rating.png"),
+            ("Sensor Demo", "icons/interactions/Sensor.svg"),
+            ("Rating Data", "icons/interactions/Rating.png"),
         ]
 
         for col, (name, icon_path) in enumerate(sections):

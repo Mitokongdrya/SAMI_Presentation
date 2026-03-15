@@ -13,7 +13,7 @@ class HomeButton(QToolButton):
         super().__init__()
         self.setText(text)
         self.setMinimumSize(400, 150)
-        self.setIcon(QIcon(QPixmap("icons/home.png")))
+        self.setIcon(QIcon(QPixmap("icons/Home.png")))
         self.setIconSize(QSize(100, 100))
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         # self.setMinimumSize(400, 400)

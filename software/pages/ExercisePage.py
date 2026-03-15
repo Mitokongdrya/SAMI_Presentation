@@ -49,11 +49,11 @@ class ExercisePage(QWidget):
         # ── Exercise configuration ───────────────────────────────────────────
         # behaviors = self.parent_ui.get_behavior_files()
         self.exercise_config = [
-            {"title": "Wave", "description": "Wave hello to the adoring fans", "file": "Wave.json", "video": "icons/Waving.gif",
+            {"title": "Wave", "description": "Wave hello to the adoring fans", "file": "Wave.json", "video": "icons/exercises/Waving.gif",
              "why": "Waving engages the shoulder and elbow joints, promoting upper limb mobility and coordination."},
-            {"title": "Shrug", "description": "What's Happening?", "file": "Shrug.json", "video": "icons/Shrug.gif",
+            {"title": "Shrug", "description": "What's Happening?", "file": "Shrug.json", "video": "icons/exercises/Shrug.gif",
              "why": "Shoulder shrugs strengthen the trapezius muscles and help release tension in the neck and upper back."},
-            {"title": "Side Stretch", "description": "Helps with core strength", "file": "SideToSide.json", "video": "icons/SideToSide.gif",
+            {"title": "Side Stretch", "description": "Helps with core strength", "file": "SideToSide.json", "video": "icons/exercises/SideToSide.gif",
              "why": "Side-to-side stretching improves spinal flexibility, activates the obliques, and enhances balance."},
         ]
 

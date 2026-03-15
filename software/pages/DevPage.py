@@ -102,15 +102,15 @@ class DevPage(QWidget):
         row3 = QHBoxLayout()
         row3.setSpacing(40)
 
-        nav_exercises = IconNavButton("Exercises", "icons/Exercises.png")
+        nav_exercises = IconNavButton("Exercises", "icons/interactions/Exercises.png")
         nav_exercises.clicked.connect(lambda: print("[DevPage] IconNavButton 'Exercises' clicked"))
         row3.addWidget(nav_exercises)
 
-        nav_trivia = IconNavButton("Trivia", "icons/Trivia.png")
+        nav_trivia = IconNavButton("Trivia", "icons/interactions/Trivia.png")
         nav_trivia.clicked.connect(lambda: print("[DevPage] IconNavButton 'Trivia' clicked"))
         row3.addWidget(nav_trivia)
 
-        nav_data = IconNavButton("Data", "icons/data.svg")
+        nav_data = IconNavButton("Data", "icons/interactions/Data.svg")
         nav_data.clicked.connect(lambda: print("[DevPage] IconNavButton 'Data' clicked"))
         row3.addWidget(nav_data)
 
@@ -120,11 +120,11 @@ class DevPage(QWidget):
         row3b = QHBoxLayout()
         row3b.setSpacing(20)
 
-        nav_small = IconNavButton("Small tile", "icons/Sensor.svg", size=250, icon_size=100, font_size=28)
+        nav_small = IconNavButton("Small tile", "icons/interactions/Sensor.svg", size=250, icon_size=100, font_size=28)
         nav_small.clicked.connect(lambda: print("[DevPage] small IconNavButton clicked"))
         row3b.addWidget(nav_small)
 
-        nav_custom = IconNavButton("Custom colour", "icons/Rating.png", bg="#b3ff66", bg_hover="#99e64d")
+        nav_custom = IconNavButton("Custom colour", "icons/interactions/Rating.png", bg="#b3ff66", bg_hover="#99e64d")
         nav_custom.clicked.connect(lambda: print("[DevPage] custom-colour IconNavButton clicked"))
         row3b.addWidget(nav_custom)
 

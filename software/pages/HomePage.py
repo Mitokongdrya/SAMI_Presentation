@@ -44,9 +44,9 @@ class HomePage(QWidget):
         grid.setVerticalSpacing(40)
 
         interactions = [
-            ("Exercises", "icons/Exercises.png"),
-            ("Trivia", "icons/Trivia.png"),
-            ("Data", "icons/data.svg")
+            ("Exercises", "icons/interactions/Exercises.png"),
+            ("Trivia", "icons/interactions/Trivia.png"),
+            ("Data", "icons/interactions/Data.svg")
         ]
 
         for col, (name, icon_path) in enumerate(interactions):

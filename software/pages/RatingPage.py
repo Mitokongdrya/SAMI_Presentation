@@ -47,11 +47,11 @@ class RatingPage(QWidget):
         self.group.setExclusive(True)
 
         ratings = [
-            ("Bad", 1, "#ff4d4d", "icons/Bad.png"),
-            ("Poor", 2, "#ff944d", "icons/Poor.png"),
-            ("Neutral", 3, "#ffe666", "icons/Neutral.png"),
-            ("Good", 4, "#b3ff66", "icons/Good.png"),
-            ("Excellent", 5, "#66ff66", "icons/Excellent.png"),
+            ("Bad", 1, "#ff4d4d", "icons/ratings/Bad.png"),
+            ("Poor", 2, "#ff944d", "icons/ratings/Poor.png"),
+            ("Neutral", 3, "#ffe666", "icons/ratings/Neutral.png"),
+            ("Good", 4, "#b3ff66", "icons/ratings/Good.png"),
+            ("Excellent", 5, "#66ff66", "icons/ratings/Excellent.png"),
         ]
 
         for label, value, color, icon_path in ratings:
