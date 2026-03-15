@@ -39,7 +39,7 @@ class RatingDataPage(QWidget):
         super().__init__()
 
         self.parent_ui  = parent_ui
-        self.rating_file = "exercise_ratings.txt"
+        self.rating_file = "data/interaction_ratings.txt"
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(40, 20, 40, 20)

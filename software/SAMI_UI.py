@@ -350,8 +350,8 @@ class SAMIControlUI(SAMIControl, QMainWindow):
 
         self.selected_exercise = None
         self.last_rating = None
-        self.rating_file = "exercise_ratings.txt"
-        self.trivia_score_file = "trivia_scores.txt"
+        self.rating_file = "data/interaction_ratings.txt"
+        self.trivia_score_file = "data/trivia_scores.txt"
         self.last_trivia_score_str = ""  # e.g. "7/10", set after trivia ends
 
         # ── Trivia state ─────────────────────────────────────────────────
